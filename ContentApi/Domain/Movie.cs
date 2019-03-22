@@ -8,9 +8,9 @@
 
         //public IList<IDictionary<Person, Ocupation>> Professionals { get; set; }
 
-        public long Duration { get; set; }
+        public ulong Duration { get; set; }
 
-        public long Budget { get; set; }
+        public ulong Budget { get; set; }
 
         //public Media Media { get; set; }
     }

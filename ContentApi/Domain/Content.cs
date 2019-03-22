@@ -5,7 +5,7 @@ namespace ContentApi.Domain
 {
     public class Content
     {
-        public string Id { get; set; }
+        public uint Id { get; set; }
 
         public string Name { get; set; }
 
@@ -15,7 +15,7 @@ namespace ContentApi.Domain
 
         public string Country { get; set; }
 
-        public DateTime ReleaseDate { get; set; }
+        public string ReleaseDate { get; set; }
 
         public string Studio { get; set; }
     }

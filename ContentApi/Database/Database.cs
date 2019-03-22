@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System.Threading;
 using System;
+using Dapper;
 
 namespace ContentApi.Database
 {
@@ -21,11 +22,11 @@ namespace ContentApi.Database
                         COUNTRY VARCHAR(255),
                         DURATION_SEC BIGINT UNSIGNED,
                         STUDIO VARCHAR(255),
-                        RELEASE_DATE DATETIME
+                        RELEASE_DATE VARCHAR(10)
                     );
                 ";
 
-            var command = connection.CreateCommand();
+                var command = connection.CreateCommand();
                 connection.Open();
                 command.CommandText = query;
                 command.ExecuteNonQuery();
