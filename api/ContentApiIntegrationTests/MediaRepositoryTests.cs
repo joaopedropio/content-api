@@ -1,6 +1,6 @@
-﻿using ContentApi;
-using ContentApi.Domain.Entities;
+﻿using ContentApi.Domain.Entities;
 using ContentApi.Domain.Repositories;
+using ContentApiIntegrationTests;
 using NUnit.Framework;
 
 namespace ContentApiTests
@@ -11,7 +11,7 @@ namespace ContentApiTests
 
         public MediaRepositoryTests()
         {
-            var connectionString = "Server=localhost;Database=content;Uid=content;Pwd=content1234";
+            var connectionString = new Configurations().ConnectionString;
             this.mediaRepository = new MediaRepository(connectionString);
             ContentApi.Database.DatabaseSetup.Bootstrap(connectionString);
         }

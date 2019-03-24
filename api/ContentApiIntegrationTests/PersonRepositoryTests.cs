@@ -1,5 +1,6 @@
 ﻿using ContentApi.Domain.Entities;
 using ContentApi.Domain.Repositories;
+using ContentApiIntegrationTests;
 using NUnit.Framework;
 using System;
 
@@ -11,7 +12,7 @@ namespace ContentApiTests
         [SetUp]
         public void Setup()
         {
-            var connectionString = "Server=localhost;Database=content;Uid=content;Pwd=content1234";
+            var connectionString = new Configurations().ConnectionString;
             this.personRepository = new PersonRepository(connectionString);
             ContentApi.Database.DatabaseSetup.Bootstrap(connectionString);
         }
