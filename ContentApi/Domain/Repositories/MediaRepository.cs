@@ -17,7 +17,7 @@ namespace ContentApi.Domain.Repositories
         {
             this.connectionString = connectionString;
         }
-        public bool Delete(int id)
+        public bool Delete(uint id)
         {
             throw new System.NotImplementedException();
         }
@@ -27,7 +27,7 @@ namespace ContentApi.Domain.Repositories
             throw new System.NotImplementedException();
         }
 
-        public Media Get(int id)
+        public Media Get(uint id)
         {
             using (var conn = new MySqlConnection(connectionString))
             {
@@ -48,7 +48,7 @@ namespace ContentApi.Domain.Repositories
             }
         }
 
-        public int Insert(Media media)
+        public uint Insert(Media media)
         {
             using (var conn = new MySqlConnection(connectionString))
             {
@@ -64,7 +64,7 @@ namespace ContentApi.Domain.Repositories
                 if (affectedrows == 0)
                     throw new Exception("Error while inserting person");
 
-                return conn.QueryFirstOrDefault<int>("SELECT LAST_INSERT_ID()");
+                return conn.QueryFirstOrDefault<uint>("SELECT LAST_INSERT_ID()");
             }
         }
     }

@@ -13,22 +13,6 @@ namespace ContentApi.Database
             {
                 var query = @"
 
-                    /* MOVIES */
-
-                    CREATE TABLE IF NOT EXISTS MOVIES (
-                        ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                        NAME VARCHAR(255),
-                        SHORT_DESCRIPTION VARCHAR(511),
-                        SYNOPSIS VARCHAR(1023),
-                        COVER_IMAGE_PATH VARCHAR(255),
-                        BUDGET BIGINT UNSIGNED,
-                        COUNTRY VARCHAR(255),
-                        DURATION_SEC BIGINT UNSIGNED,
-                        STUDIO VARCHAR(255),
-                        RELEASE_DATE DATETIME,
-                        VIDEO_ID INT UNSIGNED
-                    );
-
                     /* MEDIAS */
 
                     CREATE TABLE IF NOT EXISTS MEDIAS (
@@ -39,17 +23,36 @@ namespace ContentApi.Database
                         TYPE INT UNSIGNED
                     );
 
+                    /* MOVIES */
+
+                    CREATE TABLE IF NOT EXISTS MOVIES (
+                        ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                        NAME VARCHAR(255),
+                        SHORT_DESCRIPTION VARCHAR(511),
+                        SYNOPSIS VARCHAR(1023),
+                        COVER_IMAGE_ID INT UNSIGNED,
+                        BUDGET BIGINT UNSIGNED,
+                        COUNTRY VARCHAR(255),
+                        DURATION_SEC BIGINT UNSIGNED,
+                        STUDIO VARCHAR(255),
+                        RELEASE_DATE DATETIME,
+                        VIDEO_ID INT UNSIGNED,
+                        FOREIGN KEY (COVER_IMAGE_ID) REFERENCES MEDIAS(ID),
+                        FOREIGN KEY (VIDEO_ID) REFERENCES MEDIAS(ID)
+                    );
+
                     /* PERSONS */
 
                     CREATE TABLE IF NOT EXISTS PERSONS (
                         ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                         NAME VARCHAR(255),
-                        BIRTHDAY TIMESTAMP,
+                        BIRTHDAY DATETIME,
                         NATIONALITY VARCHAR(255)
                     );
 
                     /* CONTENT_TYPE */
 
+                    /*
                     CREATE TABLE IF NOT EXISTS CONTENT_TYPE (
                         ID INT UNSIGNED PRIMARY KEY,
                         TYPE VARCHAR(100)
@@ -66,6 +69,7 @@ namespace ContentApi.Database
                     WHERE NOT EXISTS (
                         SELECT TYPE FROM CONTENT_TYPE WHERE TYPE = 'Serie'
                     ) LIMIT 1;
+                    */
 
                     /* OCUPATIONS */
 
@@ -110,7 +114,6 @@ namespace ContentApi.Database
                         CONTENT_ID INT UNSIGNED,
                         PERSON_ID INT UNSIGNED,
                         OCUPATION_ID INT UNSIGNED,
-                        CONTENT_TYPE_ID INT UNSIGNED,
                         PRIMARY KEY (CONTENT_ID, PERSON_ID, OCUPATION_ID)
                     );
                 ";

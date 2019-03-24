@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ContentApiIntegrationTests": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "CONNECTION_STRING": "Server=localhost;Database=content;Uid=content;Pwd=content1234"
+      }
+    }
+  }
+}

@@ -1,10 +1,7 @@
-﻿using ContentApi.Domain;
-using ContentApi.Domain.Entities;
+﻿using ContentApi.Domain.Entities;
 using ContentApi.Domain.Repositories;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ContentApiTests
 {

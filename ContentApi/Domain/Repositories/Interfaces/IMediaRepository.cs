@@ -6,8 +6,8 @@ namespace ContentApi.Domain.Repositories.Interfaces
     public interface IMediaRepository
     {
         IList<Media> Get();
-        Media Get(int id);
-        bool Delete(int id);
-        int Insert(Media media);
+        Media Get(uint id);
+        bool Delete(uint id);
+        uint Insert(Media media);
     }
 }

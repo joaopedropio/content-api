@@ -1,4 +1,5 @@
-﻿using ContentApi.Domain.Entities;
+﻿using ContentApi;
+using ContentApi.Domain.Entities;
 using ContentApi.Domain.Repositories;
 using NUnit.Framework;
 

@@ -1,4 +1,5 @@
-﻿using ContentApi.Domain.Entities;
+﻿using ContentApi.Database;
+using ContentApi.Domain.Entities;
 using Dapper;
 using MySql.Data.MySqlClient;
 using System;
@@ -15,7 +16,7 @@ namespace ContentApi.Domain.Repositories
         {
             this.connectionString = connectionString;
         }
-        public bool Delete(int id)
+        public bool Delete(uint id)
         {
             throw new NotImplementedException();
         }
@@ -25,7 +26,7 @@ namespace ContentApi.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public Person Get(int id)
+        public Person Get(uint id)
         {
             using (var conn = new MySqlConnection(connectionString))
             {
@@ -43,17 +44,29 @@ namespace ContentApi.Domain.Repositories
             }
         }
 
-        public int Insert(Person person)
+        public IEnumerable<uint> InsertMany(IEnumerable<Person> persons)
+        {
+            return persons.Select(p => Insert(p));
+        }
+
+        public uint Insert(Person person)
         {
             using (var conn = new MySqlConnection(connectionString))
             {
-                var query = $"INSERT INTO PERSONS (NAME, BIRTHDAY, NATIONALITY) " +
-                    $"VALUES ('{person.Name}', '{person.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}', '{person.Nationality}');";
+                //var query = $"INSERT INTO PERSONS (NAME, BIRTHDAY, NATIONALITY) " +
+                //    $"VALUES ('{person.Name}', '{person.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}', '{person.Nationality}');";
+                var query = QueryHelper.CreateInsertQuery("PERSONS", new List<KeyValuePair<string, string>>()
+                {
+                    new KeyValuePair<string, string>("NAME", person.Name),
+                    new KeyValuePair<string, string>("BIRTHDAY", person.Birthday.ToString("yyyy-MM-dd HH:mm:ss")),
+                    new KeyValuePair<string, string>("NATIONALITY", person.Nationality)
+                });
+
                 var affectedrows = conn.Execute(query);
                 if (affectedrows == 0)
                     throw new Exception("Error while inserting person");
 
-                return conn.QueryFirstOrDefault<int>("SELECT LAST_INSERT_ID()");
+                return conn.QueryFirstOrDefault<uint>("SELECT LAST_INSERT_ID()");
             }
         }
     }

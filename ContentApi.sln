@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContentApi", "ContentApi\ContentApi.csproj", "{5C9EFCB5-FDAD-45F9-8913-B25D4467389E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContentApi", "ContentApi\ContentApi.csproj", "{5C9EFCB5-FDAD-45F9-8913-B25D4467389E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContentApiTests", "ContentApiTests\ContentApiTests.csproj", "{7BDBAF3B-EC45-4507-A2F1-AC8757EAFA72}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContentApiIntegrationTests", "ContentApiIntegrationTests\ContentApiIntegrationTests.csproj", "{7BDBAF3B-EC45-4507-A2F1-AC8757EAFA72}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContentApiUnitTests", "ContentApiUnitTests\ContentApiUnitTests.csproj", "{0B155772-76D9-431C-B996-14A311F89805}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{7BDBAF3B-EC45-4507-A2F1-AC8757EAFA72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BDBAF3B-EC45-4507-A2F1-AC8757EAFA72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BDBAF3B-EC45-4507-A2F1-AC8757EAFA72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B155772-76D9-431C-B996-14A311F89805}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B155772-76D9-431C-B996-14A311F89805}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B155772-76D9-431C-B996-14A311F89805}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B155772-76D9-431C-B996-14A311F89805}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
