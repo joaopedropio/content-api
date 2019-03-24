@@ -1,7 +1,7 @@
-﻿{
+{
   "iisSettings": {
-    "windowsAuthentication": false, 
-    "anonymousAuthentication": true, 
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
     "iisExpress": {
       "applicationUrl": "http://localhost:23802",
       "sslPort": 0
@@ -17,11 +17,11 @@
     },
     "ContentApi": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
+        "CONNECTION_STRING": "Server=socialmovie.minivps.info;Database=content;Uid=content;Pwd=content1234",
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "http://localhost:5000"
     }
   }
 }

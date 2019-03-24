@@ -5,13 +5,16 @@ using Dapper;
 
 namespace ContentApi.Database
 {
-    public static class Database
+    public static class DatabaseSetup
     {
         public static void InitiateTable(string connectionString)
         {
             using (var connection = new MySqlConnection(connectionString))
             {
                 var query = @"
+
+                    /* MOVIES */
+
                     CREATE TABLE IF NOT EXISTS MOVIES (
                         ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                         NAME VARCHAR(255),
@@ -22,7 +25,93 @@ namespace ContentApi.Database
                         COUNTRY VARCHAR(255),
                         DURATION_SEC BIGINT UNSIGNED,
                         STUDIO VARCHAR(255),
-                        RELEASE_DATE VARCHAR(10)
+                        RELEASE_DATE DATETIME,
+                        VIDEO_ID INT UNSIGNED
+                    );
+
+                    /* MEDIAS */
+
+                    CREATE TABLE IF NOT EXISTS MEDIAS (
+                        ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                        NAME VARCHAR(255),
+                        DESCRIPTION VARCHAR(255),
+                        PATH VARCHAR(255),
+                        TYPE INT UNSIGNED
+                    );
+
+                    /* PERSONS */
+
+                    CREATE TABLE IF NOT EXISTS PERSONS (
+                        ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                        NAME VARCHAR(255),
+                        BIRTHDAY TIMESTAMP,
+                        NATIONALITY VARCHAR(255)
+                    );
+
+                    /* CONTENT_TYPE */
+
+                    CREATE TABLE IF NOT EXISTS CONTENT_TYPE (
+                        ID INT UNSIGNED PRIMARY KEY,
+                        TYPE VARCHAR(100)
+                    );
+
+                    INSERT INTO CONTENT_TYPE (ID, TYPE)
+                    SELECT * FROM (SELECT 0, 'Movie') AS TMP
+                    WHERE NOT EXISTS (
+                        SELECT TYPE FROM CONTENT_TYPE WHERE TYPE = 'Movie'
+                    ) LIMIT 1;
+
+                    INSERT INTO CONTENT_TYPE (ID, TYPE)
+                    SELECT * FROM (SELECT 1, 'Serie') AS TMP
+                    WHERE NOT EXISTS (
+                        SELECT TYPE FROM CONTENT_TYPE WHERE TYPE = 'Serie'
+                    ) LIMIT 1;
+
+                    /* OCUPATIONS */
+
+                    CREATE TABLE IF NOT EXISTS OCUPATIONS (
+                        ID INT UNSIGNED PRIMARY KEY,
+                        OCUPATION_NAME VARCHAR(100)
+                    );
+
+                    INSERT INTO OCUPATIONS (ID, OCUPATION_NAME)
+                    SELECT * FROM (SELECT 0, 'Actor') AS TMP
+                    WHERE NOT EXISTS (
+                        SELECT OCUPATION_NAME FROM OCUPATIONS WHERE OCUPATION_NAME = 'Actor'
+                    ) LIMIT 1;
+
+                    INSERT INTO OCUPATIONS (ID, OCUPATION_NAME)
+                    SELECT * FROM (SELECT 1, 'Director') AS TMP
+                    WHERE NOT EXISTS (
+                        SELECT OCUPATION_NAME FROM OCUPATIONS WHERE OCUPATION_NAME = 'Director'
+                    ) LIMIT 1;
+
+                    INSERT INTO OCUPATIONS (ID, OCUPATION_NAME)
+                    SELECT * FROM (SELECT 2, 'Producer') AS TMP
+                    WHERE NOT EXISTS (
+                        SELECT OCUPATION_NAME FROM OCUPATIONS WHERE OCUPATION_NAME = 'Producer'
+                    ) LIMIT 1;
+
+                    INSERT INTO OCUPATIONS (ID, OCUPATION_NAME)
+                    SELECT * FROM (SELECT 3, 'Music') AS TMP
+                    WHERE NOT EXISTS (
+                        SELECT OCUPATION_NAME FROM OCUPATIONS WHERE OCUPATION_NAME = 'Music'
+                    ) LIMIT 1;
+
+                    INSERT INTO OCUPATIONS (ID, OCUPATION_NAME)
+                    SELECT * FROM (SELECT 4, 'Editor') AS TMP
+                    WHERE NOT EXISTS (
+                        SELECT OCUPATION_NAME FROM OCUPATIONS WHERE OCUPATION_NAME = 'Editor'
+                    ) LIMIT 1;
+
+                    /* PROFESSIONALS */
+
+                    CREATE TABLE IF NOT EXISTS PROFESSIONALS (
+                        CONTENT_ID INT UNSIGNED,
+                        PERSON_ID INT UNSIGNED,
+                        OCUPATION_ID INT UNSIGNED,
+                        CONTENT_TYPE_ID INT UNSIGNED,
+                        PRIMARY KEY (CONTENT_ID, PERSON_ID, OCUPATION_ID)
                     );
                 ";
 

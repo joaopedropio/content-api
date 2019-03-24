@@ -1,4 +1,4 @@
-﻿namespace ContentApi.Domain
+﻿namespace ContentApi.Domain.Entities
 {
     public class Movie : Content
     {
@@ -6,12 +6,10 @@
 
         public string ShortDescription { get; set; }
 
-        //public IList<IDictionary<Person, Ocupation>> Professionals { get; set; }
-
         public ulong Duration { get; set; }
 
         public ulong Budget { get; set; }
 
-        //public Media Media { get; set; }
+        public Media Video { get; set; }
     }
 }

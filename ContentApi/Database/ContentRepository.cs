@@ -1,5 +1,5 @@
 ﻿using System;
-using ContentApi.Domain;
+using ContentApi.Domain.Entities;
 
 namespace ContentApi.Database
 {

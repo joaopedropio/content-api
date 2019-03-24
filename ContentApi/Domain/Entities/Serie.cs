@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ContentApi.Domain
+namespace ContentApi.Domain.Entities
 {
     public class Serie : Content
     {

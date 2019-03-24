@@ -1,8 +1,8 @@
-using ContentApi.Database;
-using ContentApi.Domain;
+using ContentApi.Domain.Entities;
+using ContentApi.Domain.Repositories;
 using NUnit.Framework;
 using System;
-using System.IO;
+using System.Collections.Generic;
 
 namespace ContentApiTests
 {
@@ -12,14 +12,25 @@ namespace ContentApiTests
         [SetUp]
         public void Setup()
         {
-            this.movieRepository = new MovieRepository("Server=socialmovie.minivps.info;Database=content;Uid=content;Pwd=content1234");
+            var connectionString = "Server=localhost;Database=content;Uid=content;Pwd=content1234";
+            this.movieRepository = new MovieRepository(connectionString);
+            ContentApi.Database.DatabaseSetup.Bootstrap(connectionString);
         }
 
         private Movie GetSampleMovie()
         {
+            var imagesPaths = new List<string>()
+            {
+                "/image/piratas1.png",
+                "/image/piratas2.png",
+                "/image/piratas3.png",
+            };
+            
             return new Movie()
             {
-                CoverImagePath = "/image/piratas.png",
+                CoverImage = new Media(),
+                Images = new List<Media>(),
+                Video = new Media(),
                 Budget = 123000000,
                 Country = "EUA",
                 Duration = 123123,
@@ -27,7 +38,7 @@ namespace ContentApiTests
                 ShortDescription = "Uns piratas ai muito loucos",
                 Studio = "Disney",
                 Synopsis = "Jack Sparrow tava fazendo umas baguncinhas no Caribe quando apareceu uma aventura do barulho",
-                ReleaseDate = "01-01-2001"
+                ReleaseDate = DateTime.Parse("01-01-2001 00:00:00")
             };
         }
 
@@ -50,15 +61,18 @@ namespace ContentApiTests
 
             var persistedMovie = this.movieRepository.Get(movieId);
 
+            Assert.AreEqual(sampleMovie.Budget, persistedMovie.Budget);
+            Assert.AreEqual(sampleMovie.Country, persistedMovie.Country);
+            Assert.AreEqual(sampleMovie.CoverImage, persistedMovie.CoverImage);
+            Assert.AreEqual(sampleMovie.Duration, persistedMovie.Duration);
+            Assert.AreEqual(sampleMovie.Images.Count, persistedMovie.Images.Count);
             Assert.AreEqual(sampleMovie.Name, persistedMovie.Name);
+            Assert.AreEqual(sampleMovie.Professionals.Count, persistedMovie.Professionals.Count);
             Assert.AreEqual(sampleMovie.ReleaseDate, persistedMovie.ReleaseDate);
             Assert.AreEqual(sampleMovie.ShortDescription, persistedMovie.ShortDescription);
             Assert.AreEqual(sampleMovie.Studio, persistedMovie.Studio);
             Assert.AreEqual(sampleMovie.Synopsis, persistedMovie.Synopsis);
-            Assert.AreEqual(sampleMovie.Duration, persistedMovie.Duration);
-            Assert.AreEqual(sampleMovie.CoverImagePath, persistedMovie.CoverImagePath);
-            Assert.AreEqual(sampleMovie.Country, persistedMovie.Country);
-            Assert.AreEqual(sampleMovie.Budget, persistedMovie.Budget);
+            Assert.AreEqual(sampleMovie.Video, persistedMovie.Video);
         }
 
         [Test]

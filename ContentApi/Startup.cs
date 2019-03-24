@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using ContentApi.Database;
 
 namespace ContentApi
 {
@@ -10,7 +11,6 @@ namespace ContentApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -19,6 +19,9 @@ namespace ContentApi
             {
                 app.UseDeveloperExceptionPage();
             }
+            var config = new Configurations();
+
+            DatabaseSetup.Bootstrap(config.ConnectionString);
 
             app.UseMvc();
         }

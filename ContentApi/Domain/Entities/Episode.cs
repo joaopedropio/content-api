@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ContentApi.Domain
+﻿namespace ContentApi.Domain.Entities
 {
     public class Episode
     {
@@ -8,9 +6,8 @@ namespace ContentApi.Domain
         public int EpisodeNumber { get; set; }
         public int SeasonNumber { get; set; }
         public string ShortDescription { get; set; }
-        public IList<KeyValuePair<Person, Ocupation>> Professionals { get; set; }
         public int Duration { get; set; }
         public long Budget { get; set; }
-        public Media Media { get; set; }
+        public string VideoPath { get; set; }
     }
 }
