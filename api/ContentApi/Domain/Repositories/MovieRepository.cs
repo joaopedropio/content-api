@@ -1,5 +1,6 @@
 ﻿using ContentApi.Database;
 using ContentApi.Domain.Entities;
+using ContentApi.Domain.Repositories.Interfaces;
 using Dapper;
 using MySql.Data.MySqlClient;
 using System;
@@ -8,11 +9,12 @@ using System.Linq;
 
 namespace ContentApi.Domain.Repositories
 {
-    public class MovieRepository : IMovieRepository
+    public class MovieRepository : IRepository<Movie>
     {
         private string connectionString;
         private MediaRepository mediaRepository;
         private PersonRepository personRepository;
+        private ProfessionalRepository professionalRepository;
 
         public MovieRepository(string databaseConnectionString)
         {
@@ -30,7 +32,7 @@ namespace ContentApi.Domain.Repositories
             }
         }
 
-        public Movie Get(int id)
+        public Movie Get(uint id)
         {
             using (var conn = new MySqlConnection(connectionString))
             {
@@ -53,14 +55,7 @@ namespace ContentApi.Domain.Repositories
                     })
                     .First();
 
-                var selectProfessionals = $"SELECT * FROM PROFESSIONALS WHERE CONTENT_ID = '{id}'";
-                var professionals = conn.Query<dynamic>(selectProfessionals).Select(p =>
-                {
-                    var person = this.personRepository.Get(p.PERSON_ID);
-                    var ocupation = Enum.Parse<Ocupation>(p.OCUPATION_ID.ToString());
-                    return new KeyValuePair<Person, Ocupation>(person, ocupation);
-                })
-                .ToList();
+                var professionals = GetByContentId(id);
 
                 movie.Professionals = professionals;
 
@@ -68,7 +63,7 @@ namespace ContentApi.Domain.Repositories
             }
         }
 
-        public bool Delete(int id)
+        public bool Delete(uint id)
         {
             using (var conn = new MySqlConnection(connectionString))
             {
@@ -78,15 +73,10 @@ namespace ContentApi.Domain.Repositories
             }
         }
 
-        public int Insert(Movie movie)
+        public uint Insert(Movie movie)
         {
             using (var conn = new MySqlConnection(connectionString))
             {
-                //var query = $"INSERT INTO MOVIES (NAME, SHORT_DESCRIPTION, SYNOPSIS, BUDGET, COUNTRY, COVER_IMAGE_PATH, DURATION_SEC, RELEASE_DATE, STUDIO, VIDEO_PATH) " +
-                //    $"VALUES ('{movie.Name}', '{movie.ShortDescription}', '{movie.Synopsis}', "
-                //    + $"'{movie.Budget}', '{movie.Country}', '{movie.CoverImage.Id}', '{movie.Duration}', "
-                //    + $"'{movie.ReleaseDate}', '{movie.Studio}'), '{movie.Video.Id}'";
-
                 var query = QueryHelper.CreateInsertQuery("MOVIES", new List<KeyValuePair<string, string>>()
                 {
                     new KeyValuePair<string, string>("NAME", movie.Name),
@@ -100,33 +90,61 @@ namespace ContentApi.Domain.Repositories
                     new KeyValuePair<string, string>("VIDEO_ID", movie.Video.Id.ToString()),
                     new KeyValuePair<string, string>("COVER_IMAGE_ID", movie.CoverImage.Id.ToString())
                 });
-                /*
-                    CONTENT_ID INT UNSIGNED,
-                    PERSON_ID INT UNSIGNED,
-                    OCUPATION_ID INT UNSIGNED,
-                    PRIMARY KEY (CONTENT_ID, PERSON_ID, OCUPATION_ID)
-                */
 
                 var affectedrows = conn.Execute(query);
                 if (affectedrows == 0)
                     throw new Exception("Error while inserting movie");
 
-                var movieId = conn.QueryFirstOrDefault<int>("SELECT LAST_INSERT_ID()");
+                var movieId = conn.QueryFirstOrDefault<uint>("SELECT LAST_INSERT_ID()");
 
-                var professionalsQueryColumns = movie.Professionals.Select(p =>
+                InsertMany(movieId, movie.Professionals);
+
+                return movieId;
+            }
+        }
+
+        private IList<Professional> GetByContentId(uint contentId)
+        {
+            using (var conn = new MySqlConnection(connectionString))
+            {
+                var selectProfessionals = $"SELECT * FROM PROFESSIONALS WHERE CONTENT_ID = '{contentId}'";
+                var professionals = conn.Query<dynamic>(selectProfessionals).Select(p =>
+                {
+                    var professional = new Professional();
+                    professional.Person = this.personRepository.Get(p.PERSON_ID);
+                    professional.Ocupation = Enum.Parse<Ocupation>(p.OCUPATION_ID.ToString());
+
+                    return professional;
+                })
+                .ToList();
+                return professionals;
+            }
+        }
+
+        private IList<uint> InsertMany(uint contentId, IList<Professional> professionals)
+        {
+            using (var conn = new MySqlConnection(connectionString))
+            {
+                var professionalsQueryColumns = professionals.Select(pro =>
                 {
                     return new List<KeyValuePair<string, string>>()
-                    {
-                        new KeyValuePair<string, string>("CONTENT_ID", movieId.ToString()),
-                        new KeyValuePair<string, string>("PERSON_ID", p.Key.Id.ToString()),
-                        new KeyValuePair<string, string>("OCUPATION_ID", p.Value.GetHashCode().ToString())
-                    };
+                        {
+                            new KeyValuePair<string, string>("CONTENT_ID", contentId.ToString()),
+                            new KeyValuePair<string, string>("PERSON_ID", pro.Person.Id.ToString()),
+                            new KeyValuePair<string, string>("OCUPATION_ID", pro.Ocupation.GetHashCode().ToString())
+                        };
                 });
 
                 var insertProfessionalsQuery = professionalsQueryColumns.Select(q => QueryHelper.CreateInsertQuery("PROFESSIONALS", q));
-                insertProfessionalsQuery.Select(i => conn.Execute(i)).ToList();
+                return insertProfessionalsQuery.Select(q =>
+                {
+                    var affectedrows = conn.Execute(q);
+                    if (affectedrows == 0)
+                        throw new Exception("Error while inserting professional");
 
-                return movieId;
+                    return conn.QueryFirstOrDefault<uint>("SELECT LAST_INSERT_ID()");
+
+                }).ToList();
             }
         }
     }

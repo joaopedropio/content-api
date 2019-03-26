@@ -11,8 +11,6 @@ namespace ContentApi.Domain.Entities
 
         public Media CoverImage { get; set; }
 
-        public IList<KeyValuePair<Person, Ocupation>> Professionals { get; set; }
-
         public string Country { get; set; }
 
         public DateTime ReleaseDate { get; set; }

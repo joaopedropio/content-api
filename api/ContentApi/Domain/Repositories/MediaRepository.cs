@@ -9,7 +9,7 @@ using MySql.Data.MySqlClient;
 
 namespace ContentApi.Domain.Repositories
 {
-    public class MediaRepository : IMediaRepository
+    public class MediaRepository : IRepository<Media>
     {
         private string connectionString;
 

@@ -1,4 +1,6 @@
-﻿namespace ContentApi.Domain.Entities
+﻿using System.Collections.Generic;
+
+namespace ContentApi.Domain.Entities
 {
     public class Movie : Content
     {
@@ -11,5 +13,7 @@
         public ulong Budget { get; set; }
 
         public Media Video { get; set; }
+
+        public IList<Professional> Professionals { get; set; }
     }
 }

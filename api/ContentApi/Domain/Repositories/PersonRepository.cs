@@ -1,5 +1,6 @@
 ﻿using ContentApi.Database;
 using ContentApi.Domain.Entities;
+using ContentApi.Domain.Repositories.Interfaces;
 using Dapper;
 using MySql.Data.MySqlClient;
 using System;
@@ -8,7 +9,7 @@ using System.Linq;
 
 namespace ContentApi.Domain.Repositories
 {
-    public class PersonRepository : IPersonRepository
+    public class PersonRepository : IRepository<Person>
     {
         private string connectionString;
 

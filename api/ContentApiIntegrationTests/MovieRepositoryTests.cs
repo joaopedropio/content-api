@@ -24,27 +24,35 @@ namespace ContentApiTests
             ContentApi.Database.DatabaseSetup.Bootstrap(connectionString);
         }
 
-        private List<KeyValuePair<Person, Ocupation>> GetSampleProfessionals()
+        private List<Professional> GetSampleProfessionals()
         {
-            var person1 = new Person()
+            var professional1 = new Professional()
             {
-                Name = "Arnold Schwarzenegger",
-                Birthday = new DateTime(1947, 7, 30),
-                Nationality = "Austria"
+                Person = new Person()
+                {
+                    Name = "Arnold Schwarzenegger",
+                    Birthday = new DateTime(1947, 7, 30),
+                    Nationality = "Austria"
+                },
+                Ocupation = Ocupation.Actor
             };
 
-            var person2 = new Person()
+            var professional2 = new Professional()
             {
-                Name = "Linda Hamilton",
-                Birthday = new DateTime(1956, 9, 26),
-                Nationality = "United States of America"
+                Person = new Person()
+                {
+                    Name = "Linda Hamilton",
+                    Birthday = new DateTime(1956, 9, 26),
+                    Nationality = "United States of America"
+                },
+                Ocupation = Ocupation.Actor
             };
 
 
-            return new List<KeyValuePair<Person, Ocupation>>()
+            return new List<Professional>()
             {
-                new KeyValuePair<Person, Ocupation>(person1, Ocupation.Actor),
-                new KeyValuePair<Person, Ocupation>(person2, Ocupation.Actor)
+                professional1,
+                professional2
             };
         }
 
@@ -80,12 +88,12 @@ namespace ContentApiTests
 
             var professionalsSample = GetSampleProfessionals();
 
-            var persons = professionalsSample.Select(pro => pro.Key);
+            var persons = professionalsSample.Select(pro => pro.Person);
 
             var personsIds = this.personRepository.InsertMany(persons).ToList();
 
-            professionalsSample[0].Key.Id = personsIds[0];
-            professionalsSample[1].Key.Id = personsIds[1];
+            professionalsSample[0].Person.Id = personsIds[0];
+            professionalsSample[1].Person.Id = personsIds[1];
 
             return new Movie()
             {
@@ -147,17 +155,17 @@ namespace ContentApiTests
 
             // Assert Professionals
             var sampleProfessionals = GetSampleProfessionals();
-            Assert.AreEqual(sampleProfessionals[0].Key.Age, persistedMovie.Professionals[0].Key.Age);
-            Assert.AreEqual(sampleProfessionals[0].Key.Birthday, persistedMovie.Professionals[0].Key.Birthday);
-            Assert.AreEqual(sampleProfessionals[0].Key.Name, persistedMovie.Professionals[0].Key.Name);
-            Assert.AreEqual(sampleProfessionals[0].Key.Nationality, persistedMovie.Professionals[0].Key.Nationality);
-            Assert.AreEqual(sampleProfessionals[0].Value, persistedMovie.Professionals[0].Value);
+            Assert.AreEqual(sampleProfessionals[0].Person.Age, persistedMovie.Professionals[0].Person.Age);
+            Assert.AreEqual(sampleProfessionals[0].Person.Birthday, persistedMovie.Professionals[0].Person.Birthday);
+            Assert.AreEqual(sampleProfessionals[0].Person.Name, persistedMovie.Professionals[0].Person.Name);
+            Assert.AreEqual(sampleProfessionals[0].Person.Nationality, persistedMovie.Professionals[0].Person.Nationality);
+            Assert.AreEqual(sampleProfessionals[0].Ocupation, persistedMovie.Professionals[0].Ocupation);
 
-            Assert.AreEqual(sampleProfessionals[1].Key.Age, persistedMovie.Professionals[1].Key.Age);
-            Assert.AreEqual(sampleProfessionals[1].Key.Birthday, persistedMovie.Professionals[1].Key.Birthday);
-            Assert.AreEqual(sampleProfessionals[1].Key.Name, persistedMovie.Professionals[1].Key.Name);
-            Assert.AreEqual(sampleProfessionals[1].Key.Nationality, persistedMovie.Professionals[1].Key.Nationality);
-            Assert.AreEqual(sampleProfessionals[1].Value, persistedMovie.Professionals[1].Value);
+            Assert.AreEqual(sampleProfessionals[1].Person.Age, persistedMovie.Professionals[1].Person.Age);
+            Assert.AreEqual(sampleProfessionals[1].Person.Birthday, persistedMovie.Professionals[1].Person.Birthday);
+            Assert.AreEqual(sampleProfessionals[1].Person.Name, persistedMovie.Professionals[1].Person.Name);
+            Assert.AreEqual(sampleProfessionals[1].Person.Nationality, persistedMovie.Professionals[1].Person.Nationality);
+            Assert.AreEqual(sampleProfessionals[1].Ocupation, persistedMovie.Professionals[1].Ocupation);
         }
 
         [Test]

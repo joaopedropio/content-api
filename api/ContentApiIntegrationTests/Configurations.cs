@@ -11,9 +11,8 @@ namespace ContentApiIntegrationTests
 
         public Configurations(IConfigurationRoot configuration)
         {
-            ConnectionString = configuration.GetValue<string>("CONNECTION_STRING");
-            if (string.IsNullOrEmpty(ConnectionString))
-                throw new Exception("No connection string provided.");
+            ConnectionString = configuration.GetValue<string>("CONNECTION_STRING") ??
+                               "Server=localhost;Database=content;Uid=content;Pwd=content1234";
         }
     }
 }

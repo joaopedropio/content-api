@@ -18,7 +18,7 @@
     "ContentApi": {
       "commandName": "Project",
       "environmentVariables": {
-        "CONNECTION_STRING": "Server=socialmovie.minivps.info;Database=content;Uid=content;Pwd=content1234",
+        "CONNECTION_STRING": "Server=localhost;Database=content;Uid=content;Pwd=content1234",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "http://localhost:5000"
