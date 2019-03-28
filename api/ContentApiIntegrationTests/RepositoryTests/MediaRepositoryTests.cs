@@ -11,7 +11,7 @@ namespace ContentApiTests
 
         public MediaRepositoryTests()
         {
-            var connectionString = Configurations.ConnectionString;
+            var connectionString = Configurations.GetConnectionString();
             this.mediaRepository = new MediaRepository(connectionString);
             ContentApi.Database.DatabaseSetup.Bootstrap(connectionString);
         }

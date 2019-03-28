@@ -17,7 +17,7 @@ namespace ContentApiTests
         [SetUp]
         public void Setup()
         {
-            var connectionString = Configurations.ConnectionString;
+            var connectionString = Configurations.GetConnectionString();
             this.movieRepository = new MovieRepository(connectionString);
             this.mediaRepository = new MediaRepository(connectionString);
             this.personRepository = new PersonRepository(connectionString);

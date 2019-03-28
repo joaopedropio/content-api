@@ -16,7 +16,7 @@ namespace ContentApiIntegrationTest
         private HttpClient apiClient;
         public MediaControllerTests()
         {
-            Environment.SetEnvironmentVariable("CONNECTION_STRING", Configurations.ConnectionString);
+            Environment.SetEnvironmentVariable("CONNECTION_STRING", Configurations.GetConnectionString());
             var server = new TestServer(Program.CreateWebHostBuilder());
             this.apiClient = server.CreateClient();
         }

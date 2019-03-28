@@ -12,7 +12,7 @@ namespace ContentApiTests
         [SetUp]
         public void Setup()
         {
-            var connectionString = Configurations.ConnectionString;
+            var connectionString = Configurations.GetConnectionString();
             this.personRepository = new PersonRepository(connectionString);
             ContentApi.Database.DatabaseSetup.Bootstrap(connectionString);
         }
