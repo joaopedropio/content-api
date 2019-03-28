@@ -1,7 +1,10 @@
-﻿using ContentApi.Domain.Repositories;
+﻿using ContentApi.Domain.Entities;
+using ContentApi.Domain.Repositories;
 using ContentApi.JSON;
 using Microsoft.AspNetCore.Mvc;
-using static System.Net.HttpStatusCode;
+using Newtonsoft.Json;
+using System.IO;
+using System.Net;
 
 namespace ContentApi.Controllers
 {
@@ -13,7 +16,7 @@ namespace ContentApi.Controllers
 
         public MediaController()
         {
-            var config = new Configurations();
+            var config = new Configuration();
             this.mediaRepository = new MediaRepository(config.ConnectionString);
         }
 
@@ -21,7 +24,17 @@ namespace ContentApi.Controllers
         public IActionResult Get(uint mediaId)
         {
             var media = this.mediaRepository.Get(mediaId);
-            return JsonResultHelper.Parse(media, OK);
+            return JsonResultHelper.Parse(media, HttpStatusCode.OK);
+        }
+
+        [HttpPost]
+        public IActionResult Post()
+        {
+            var content = new StreamReader(Request.Body).ReadToEnd();
+            var media = JsonConvert.DeserializeObject<Media>(content);
+            var mediaId = this.mediaRepository.Insert(media);
+            media.Id = mediaId;
+            return JsonResultHelper.Parse(media, HttpStatusCode.Created);
         }
     }
 }

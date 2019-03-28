@@ -10,9 +10,9 @@ namespace ContentApi
             CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args = null)
         {
-            var config = new Configurations();
+            var config = new Configuration();
             return WebHost.CreateDefaultBuilder(args)
                 .UseUrls(config.URL)
                 .UseStartup<Startup>();

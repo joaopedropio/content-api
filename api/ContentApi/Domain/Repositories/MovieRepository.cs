@@ -14,7 +14,6 @@ namespace ContentApi.Domain.Repositories
         private string connectionString;
         private MediaRepository mediaRepository;
         private PersonRepository personRepository;
-        private ProfessionalRepository professionalRepository;
 
         public MovieRepository(string databaseConnectionString)
         {

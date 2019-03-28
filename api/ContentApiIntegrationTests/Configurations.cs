@@ -1,18 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-
-namespace ContentApiIntegrationTests
+﻿namespace ContentApiIntegrationTests
 {
-    public class Configurations
+    public static class Configurations
     {
-        public string ConnectionString { get; set; }
-
-        public Configurations() : this(new ConfigurationBuilder().AddEnvironmentVariables().Build()) { }
-
-        public Configurations(IConfigurationRoot configuration)
-        {
-            ConnectionString = configuration.GetValue<string>("CONNECTION_STRING") ??
-                               "Server=localhost;Database=content;Uid=content;Pwd=content1234";
-        }
+        public const string ConnectionString = "Server=localhost;Database=content;Uid=content;Pwd=content1234";
     }
 }

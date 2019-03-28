@@ -19,7 +19,7 @@ namespace ContentApi
             {
                 app.UseDeveloperExceptionPage();
             }
-            var config = new Configurations();
+            var config = new Configuration();
 
             DatabaseSetup.Bootstrap(config.ConnectionString);
 
