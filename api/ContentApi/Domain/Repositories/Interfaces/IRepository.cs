@@ -6,7 +6,8 @@ namespace ContentApi.Domain.Repositories.Interfaces
     {
         IList<T> Get();
         T Get(uint id);
-        bool Delete(uint id);
+        void Delete(uint id);
         uint Insert(T media);
+        IEnumerable<T> Parse(IEnumerable<dynamic> queryResult);
     }
 }

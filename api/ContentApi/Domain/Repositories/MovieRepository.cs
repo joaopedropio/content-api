@@ -37,24 +37,10 @@ namespace ContentApi.Domain.Repositories
             {
                 var query = $"SELECT * FROM MOVIES WHERE ID = '{id}'";
 
-                var movie = conn.Query<dynamic>(query)
-                    .Select(m => new Movie()
-                    {
-                        Id = m.ID,
-                        Name = m.NAME,
-                        Budget = m.BUDGET,
-                        Country = m.COUNTRY,
-                        Duration = m.DURATION_SEC,
-                        ReleaseDate = m.RELEASE_DATE,
-                        ShortDescription = m.SHORT_DESCRIPTION,
-                        Studio = m.STUDIO,
-                        Synopsis = m.SYNOPSIS,
-                        CoverImage = this.mediaRepository.Get(m.COVER_IMAGE_ID),
-                        Video = this.mediaRepository.Get(m.VIDEO_ID)
-                    })
-                    .First();
+                var queryResult = conn.Query<dynamic>(query);
+                var movie = Parse(queryResult).First();
 
-                var professionals = GetByContentId(id);
+                var professionals = GetProfessionalsByContentId(id);
 
                 movie.Professionals = professionals;
 
@@ -62,13 +48,14 @@ namespace ContentApi.Domain.Repositories
             }
         }
 
-        public bool Delete(uint id)
+        public void Delete(uint id)
         {
             using (var conn = new MySqlConnection(connectionString))
             {
                 var query = $"DELETE FROM MOVIES WHERE ID = '{id}'";
                 var affectedrows = conn.Execute(query);
-                return affectedrows > 0;
+                if (affectedrows == 0)
+                    throw new ArgumentException($"There is no Movie to delete. Id: {id}");
             }
         }
 
@@ -102,21 +89,16 @@ namespace ContentApi.Domain.Repositories
             }
         }
 
-        private IList<Professional> GetByContentId(uint contentId)
+        private IList<Professional> GetProfessionalsByContentId(uint contentId)
         {
             using (var conn = new MySqlConnection(connectionString))
             {
                 var selectProfessionals = $"SELECT * FROM PROFESSIONALS WHERE CONTENT_ID = '{contentId}'";
-                var professionals = conn.Query<dynamic>(selectProfessionals).Select(p =>
-                {
-                    var professional = new Professional();
-                    professional.Person = this.personRepository.Get(p.PERSON_ID);
-                    professional.Ocupation = Enum.Parse<Ocupation>(p.OCUPATION_ID.ToString());
 
-                    return professional;
-                })
-                .ToList();
-                return professionals;
+
+                var professionals = conn.Query<dynamic>(selectProfessionals);
+
+                return ParseProfessionals(professionals).ToList();
             }
         }
 
@@ -145,6 +127,36 @@ namespace ContentApi.Domain.Repositories
 
                 }).ToList();
             }
+        }
+
+        public IEnumerable<Professional> ParseProfessionals(IEnumerable<dynamic> queryResult)
+        {
+            return queryResult.Select(p =>
+            {
+                var professional = new Professional();
+                professional.Person = this.personRepository.Get(p.PERSON_ID);
+                professional.Ocupation = Enum.Parse<Ocupation>(p.OCUPATION_ID.ToString());
+
+                return professional;
+            });
+        }
+
+        public IEnumerable<Movie> Parse(IEnumerable<dynamic> queryResult)
+        {
+            return queryResult.Select(m => new Movie()
+            {
+                Id = m.ID,
+                Name = m.NAME,
+                Budget = m.BUDGET,
+                Country = m.COUNTRY,
+                Duration = m.DURATION_SEC,
+                ReleaseDate = m.RELEASE_DATE,
+                ShortDescription = m.SHORT_DESCRIPTION,
+                Studio = m.STUDIO,
+                Synopsis = m.SYNOPSIS,
+                CoverImage = this.mediaRepository.Get(m.COVER_IMAGE_ID),
+                Video = this.mediaRepository.Get(m.VIDEO_ID)
+            });
         }
     }
 }

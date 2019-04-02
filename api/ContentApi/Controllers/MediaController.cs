@@ -3,6 +3,7 @@ using ContentApi.Domain.Repositories;
 using ContentApi.JSON;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Net;
 
@@ -35,6 +36,20 @@ namespace ContentApi.Controllers
             var mediaId = this.mediaRepository.Insert(media);
             media.Id = mediaId;
             return JsonResultHelper.Parse(media, HttpStatusCode.Created);
+        }
+
+        [HttpDelete]
+        public IActionResult Delete(uint mediaId)
+        {
+            try
+            {
+                this.mediaRepository.Delete(mediaId);
+            }
+            catch (Exception)
+            {
+                return StatusCode(HttpStatusCode.NotFound.GetHashCode());
+            }
+            return StatusCode(HttpStatusCode.NoContent.GetHashCode());
         }
     }
 }

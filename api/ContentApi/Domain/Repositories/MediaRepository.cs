@@ -17,14 +17,46 @@ namespace ContentApi.Domain.Repositories
         {
             this.connectionString = connectionString;
         }
-        public bool Delete(uint id)
+        public void Delete(uint id)
         {
-            throw new System.NotImplementedException();
+            using(var conn = new MySqlConnection(connectionString))
+            {
+                var query = $"DELETE FROM MEDIAS WHERE ID = {id}";
+                var affectedrows = conn.Execute(query);
+                if (affectedrows == 0)
+                    throw new ArgumentException($"Error while deleting media. Id: {id}");
+            }
         }
 
         public IList<Media> Get()
         {
-            throw new System.NotImplementedException();
+            using (var conn = new MySqlConnection(connectionString))
+            {
+                var query = $"SELECT * FROM MEDIAS";
+
+                var medias = conn.Query<dynamic>(query);
+
+                if (medias == null || medias.Count() == 0)
+                    return new List<Media>();
+
+                return Parse(medias).ToList();
+            }
+        }
+
+        public IEnumerable<Media> Parse(IEnumerable<dynamic> queryResult)
+        {
+            return queryResult.Select(m =>
+            {
+                var mediaType = Enum.Parse<MediaType>(m.TYPE.ToString());
+
+                var media = new Media();
+                media.Id = m.ID;
+                media.Description = m.DESCRIPTION;
+                media.Name = m.NAME;
+                media.Path = m.PATH;
+                media.Type = mediaType;
+                return media;
+            });
         }
 
         public Media Get(uint id)
@@ -33,18 +65,12 @@ namespace ContentApi.Domain.Repositories
             {
                 var query = $"SELECT * FROM MEDIAS WHERE ID = '{id}'";
 
-                return conn.Query<dynamic>(query).Select(m =>
-                {
-                    var mediaType = Enum.Parse<MediaType>(m.TYPE.ToString());
+                var medias = conn.Query<dynamic>(query);
 
-                    var media = new Media();
-                    media.Id = m.ID;
-                    media.Description = m.DESCRIPTION;
-                    media.Name = m.NAME;
-                    media.Path = m.PATH;
-                    media.Type = mediaType;
-                    return media;
-                }).First();
+                if (medias == null || medias.Count() == 0)
+                    throw new ArgumentException($"Element with id {id} does not exist");
+
+                return Parse(medias).First();
             }
         }
 

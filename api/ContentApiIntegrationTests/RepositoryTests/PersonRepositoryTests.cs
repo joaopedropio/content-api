@@ -9,28 +9,21 @@ namespace ContentApiTests
     public class PersonRepositoryTests
     {
         private PersonRepository personRepository;
+        private SampleDataHelper data;
+
         [SetUp]
         public void Setup()
         {
             var connectionString = Configurations.GetConnectionString();
             this.personRepository = new PersonRepository(connectionString);
+            this.data = new SampleDataHelper(connectionString);
             ContentApi.Database.DatabaseSetup.Bootstrap(connectionString);
-        }
-
-        private Person GetSamplePerson()
-        {
-            return new Person()
-            {
-                Name = "Arnold Schwarzenegger",
-                Birthday = new DateTime(1947, 7, 30),
-                Nationality = "Austria"
-            };
         }
 
         [Test]
         public void Insert_Person()
         {
-            var person = GetSamplePerson();
+            var person = data.GetSamplePerson();
 
             var personId = this.personRepository.Insert(person);
 
@@ -40,7 +33,7 @@ namespace ContentApiTests
         [Test]
         public void Get_Person()
         {
-            var person = GetSamplePerson();
+            var person = data.GetSamplePerson();
 
             var personId = this.personRepository.Insert(person);
 
@@ -49,6 +42,18 @@ namespace ContentApiTests
             Assert.AreEqual(person.Birthday, personPersisted.Birthday);
             Assert.AreEqual(person.Name, personPersisted.Name);
             Assert.AreEqual(person.Nationality, personPersisted.Nationality);
+        }
+
+        [Test]
+        public void Delete_Person()
+        {
+            var samplePerson = data.GetSamplePerson();
+
+            var personId = this.personRepository.Insert(samplePerson);
+
+            this.personRepository.Delete(personId);
+
+            Assert.Throws<InvalidOperationException>(() => this.personRepository.Get(personId), "Sequence contains no elements");
         }
     }
 }

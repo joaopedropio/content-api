@@ -17,9 +17,15 @@ namespace ContentApi.Domain.Repositories
         {
             this.connectionString = connectionString;
         }
-        public bool Delete(uint id)
+        public void Delete(uint id)
         {
-            throw new NotImplementedException();
+            using (var conn = new MySqlConnection(connectionString))
+            {
+                var query = $"DELETE FROM PERSONS WHERE ID = {id}";
+                var affectedrows = conn.Execute(query);
+                if (affectedrows == 0)
+                    throw new Exception($"Error while deleting Person. Id: {id}");
+            }
         }
 
         public IList<Person> Get()
@@ -33,15 +39,9 @@ namespace ContentApi.Domain.Repositories
             {
                 var query = $"SELECT * FROM PERSONS WHERE ID = '{id}'";
 
-                return conn.Query<dynamic>(query).Select(m =>
-                {
-                    var person = new Person();
-                    person.Id = m.ID;
-                    person.Name = m.NAME;
-                    person.Birthday = m.BIRTHDAY;
-                    person.Nationality = m.NATIONALITY;
-                    return person;
-                }).First();
+                var queryResult = conn.Query<dynamic>(query);
+
+                return Parse(queryResult).First();
             }
         }
 
@@ -54,8 +54,6 @@ namespace ContentApi.Domain.Repositories
         {
             using (var conn = new MySqlConnection(connectionString))
             {
-                //var query = $"INSERT INTO PERSONS (NAME, BIRTHDAY, NATIONALITY) " +
-                //    $"VALUES ('{person.Name}', '{person.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}', '{person.Nationality}');";
                 var query = QueryHelper.CreateInsertQuery("PERSONS", new List<KeyValuePair<string, string>>()
                 {
                     new KeyValuePair<string, string>("NAME", person.Name),
@@ -69,6 +67,19 @@ namespace ContentApi.Domain.Repositories
 
                 return conn.QueryFirstOrDefault<uint>("SELECT LAST_INSERT_ID()");
             }
+        }
+
+        public IEnumerable<Person> Parse(IEnumerable<dynamic> queryResult)
+        {
+            return queryResult.Select(m =>
+            {
+                var person = new Person();
+                person.Id = m.ID;
+                person.Name = m.NAME;
+                person.Birthday = m.BIRTHDAY;
+                person.Nationality = m.NATIONALITY;
+                return person;
+            });
         }
     }
 }
