@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ContentClient.Models
 {
-    public class Movie
+    public class Movie : Content
     {
         public string Synopsis { get; set; }
 

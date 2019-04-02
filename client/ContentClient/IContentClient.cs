@@ -2,27 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ContentClient
 {
     public interface IContentClient
     {
-        // Media
-        IList<Media> GetMedia();
-        Media GetMedia(uint id);
-        bool DeleteMedia(uint id);
-        uint InsertMedia(Media media);
-
-        // Media
-        IList<Person> GetPerson();
-        Person GetPerson(uint id);
-        bool DeletePerson(uint id);
-        uint InsertPerson(Person person);
-
-        // Media
-        IList<Movie> GetMovie();
-        Movie GetMovie(uint id);
-        bool DeleteMovie(uint id);
-        uint InsertMovie(Movie movie);
+        Task<IList<T>> Get<T>() where T : IStorable, new();
+        Task<T> Get<T>(uint id) where T : IStorable, new();
+        Task Delete<T>(uint id) where T : IStorable, new();
+        Task<uint> Insert<T>(T media) where T : IStorable, new();
     }
 }

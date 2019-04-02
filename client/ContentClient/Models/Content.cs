@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ContentClient.Models
 {
-    public class Content
+    public class Content : IStorable
     {
         public uint? Id { get; set; }
 
