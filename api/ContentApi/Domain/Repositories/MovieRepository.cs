@@ -40,6 +40,10 @@ namespace ContentApi.Domain.Repositories
                 var query = $"SELECT * FROM MOVIES WHERE ID = '{id}'";
 
                 var queryResult = conn.Query<dynamic>(query);
+
+                if (queryResult.Count() == 0)
+                    return null;
+
                 var movie = Parse(queryResult).First();
 
                 var professionals = GetProfessionalsByContentId(id);
@@ -99,6 +103,9 @@ namespace ContentApi.Domain.Repositories
 
 
                 var professionals = conn.Query<dynamic>(selectProfessionals);
+
+                if (professionals.Count() == 0)
+                    return new List<Professional>();
 
                 return ParseProfessionals(professionals).ToList();
             }

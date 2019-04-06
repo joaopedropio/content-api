@@ -45,6 +45,9 @@ namespace ContentApi.Domain.Repositories
 
                 var queryResult = conn.Query<dynamic>(query);
 
+                if (queryResult.Count() == 0)
+                    return null;
+
                 return Parse(queryResult).First();
             }
         }

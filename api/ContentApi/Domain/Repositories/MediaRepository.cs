@@ -67,8 +67,8 @@ namespace ContentApi.Domain.Repositories
 
                 var medias = conn.Query<dynamic>(query);
 
-                if (medias == null || medias.Count() == 0)
-                    throw new ArgumentException($"Element with id {id} does not exist");
+                if (medias.Count() == 0)
+                    return null;
 
                 return Parse(medias).First();
             }
