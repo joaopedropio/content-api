@@ -9,7 +9,6 @@ using System.Net;
 
 namespace ContentApi.Controllers
 {
-    [Route("/media/{*mediaId}")]
     [Produces("application/json")]
     public class MediaController : Controller
     {
@@ -21,6 +20,15 @@ namespace ContentApi.Controllers
             this.mediaRepository = new MediaRepository(config.ConnectionString);
         }
 
+        [Route("/media")]
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var medias = this.mediaRepository.Get();
+            return JsonResultHelper.Parse(medias, HttpStatusCode.OK);
+        }
+
+        [Route("/media/{*mediaId}")]
         [HttpGet]
         public IActionResult Get(uint mediaId)
         {
@@ -28,6 +36,8 @@ namespace ContentApi.Controllers
             return JsonResultHelper.Parse(media, HttpStatusCode.OK);
         }
 
+
+        [Route("/media")]
         [HttpPost]
         public IActionResult Post()
         {
@@ -38,6 +48,8 @@ namespace ContentApi.Controllers
             return JsonResultHelper.Parse(media, HttpStatusCode.Created);
         }
 
+
+        [Route("/media/{*mediaId}")]
         [HttpDelete]
         public IActionResult Delete(uint mediaId)
         {

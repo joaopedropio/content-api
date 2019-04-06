@@ -9,7 +9,6 @@ using System.Net;
 
 namespace ContentApi.Controllers
 {
-    [Route("/person/{*personId}")]
     [Produces("application/json")]
     public class PersonController : Controller
     {
@@ -21,6 +20,15 @@ namespace ContentApi.Controllers
             this.personRepository = new PersonRepository(config.ConnectionString);
         }
 
+        [Route("/person")]
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var persons = this.personRepository.Get();
+            return JsonResultHelper.Parse(persons, HttpStatusCode.OK);
+        }
+
+        [Route("/person/{*personId}")]
         [HttpGet]
         public IActionResult Get(uint personId)
         {
@@ -28,6 +36,7 @@ namespace ContentApi.Controllers
             return JsonResultHelper.Parse(person, HttpStatusCode.OK);
         }
 
+        [Route("/person")]
         [HttpPost]
         public IActionResult Post()
         {
@@ -38,6 +47,7 @@ namespace ContentApi.Controllers
             return JsonResultHelper.Parse(person, HttpStatusCode.Created);
         }
 
+        [Route("/person/{*personId}")]
         [HttpDelete]
         public IActionResult Delete(uint personId)
         {

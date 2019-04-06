@@ -1,5 +1,6 @@
 ﻿using ContentApi;
 using ContentApi.Domain.Entities;
+using ContentApi.Domain.Repositories;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -16,6 +17,7 @@ namespace ContentApiIntegrationTests.ControllerTests
     {
         private HttpClient apiClient;
         private DataHelper data;
+        private MovieRepository movieRepository;
 
         public MovieControllerTests()
         {
@@ -24,6 +26,31 @@ namespace ContentApiIntegrationTests.ControllerTests
             var server = new TestServer(Program.CreateWebHostBuilder());
             this.apiClient = server.CreateClient();
             this.data = new DataHelper(connectionString);
+            this.movieRepository = new MovieRepository(connectionString);
+        }
+
+        [Test]
+        public async Task Get_Movies()
+        {
+            // Arrange
+            var insertsCount = 5;
+
+            data.DeleteAll<Movie>(this.movieRepository);
+
+            var movie = data.GetSampleMovie();
+            var json = JsonConvert.SerializeObject(movie);
+            var content = new StringContent(json);
+
+            // Act
+            for (int i = 0; i < insertsCount; i++)
+            {
+                await this.apiClient.PostAsync("/movie", content);
+            }
+
+            var httpResponse = await this.apiClient.GetAsync($"/movie");
+            var resultMovies = await HttpResponseHelper.ReadBody<List<Movie>>(httpResponse);
+
+            Assert.AreEqual(insertsCount, resultMovies.Count);
         }
 
         [Test]

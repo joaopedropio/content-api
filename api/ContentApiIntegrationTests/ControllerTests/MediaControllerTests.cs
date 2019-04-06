@@ -1,10 +1,12 @@
 ﻿using ContentApi;
 using ContentApi.Domain.Entities;
+using ContentApi.Domain.Repositories;
 using ContentApiIntegrationTests;
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,6 +17,8 @@ namespace ContentApiIntegrationTests.ControllerTests
     {
         private HttpClient apiClient;
         private DataHelper data;
+        private MediaRepository mediaRepository;
+        private MovieRepository movieRepository;
 
         public MediaControllerTests()
         {
@@ -23,6 +27,8 @@ namespace ContentApiIntegrationTests.ControllerTests
             var server = new TestServer(Program.CreateWebHostBuilder());
             this.apiClient = server.CreateClient();
             this.data = new DataHelper(connectionString);
+            this.mediaRepository = new MediaRepository(connectionString);
+            this.movieRepository = new MovieRepository(connectionString);
         }
 
         [Test]
@@ -45,6 +51,31 @@ namespace ContentApiIntegrationTests.ControllerTests
             Assert.AreEqual(media.Description, resultMedia.Description);
             Assert.AreEqual(media.Path, resultMedia.Path);
             Assert.AreEqual(media.Type, resultMedia.Type);
+        }
+
+        [Test]
+        public async Task Get_Medias()
+        {
+            // Arrange
+            var insertsCount = 5;
+
+            data.DeleteAll<Movie>(this.movieRepository);
+            data.DeleteAll<Media>(this.mediaRepository);
+
+            var media = data.GetSampleMedia();
+            var json = JsonConvert.SerializeObject(media);
+            var content = new StringContent(json);
+
+            // Act
+            for (int i = 0; i < insertsCount; i++)
+            {
+                await this.apiClient.PostAsync("/media", content);
+            }
+
+            var httpResponse = await this.apiClient.GetAsync($"/media");
+            var resultMedias = await HttpResponseHelper.ReadBody<List<Media>>(httpResponse);
+
+            Assert.AreEqual(insertsCount, resultMedias.Count);
         }
 
         [Test]
