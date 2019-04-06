@@ -10,7 +10,7 @@ namespace ContentClientIntegrationTests
         {
             var baseAdrress = Configuration.GetValue<string>("CONTENT_API_BASE_ADDRESS");
             if (string.IsNullOrEmpty(baseAdrress))
-                return "http://localhost:5000";
+                return "http://localhost";
 
             return baseAdrress;
         }
