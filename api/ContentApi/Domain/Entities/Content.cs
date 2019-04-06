@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ContentApi.Domain.Entities
 {
-    public class Content
+    public class Content : IStorable
     {
         public uint? Id { get; set; }
 

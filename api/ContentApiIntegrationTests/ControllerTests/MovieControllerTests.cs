@@ -15,7 +15,7 @@ namespace ContentApiIntegrationTests.ControllerTests
     public class MovieControllerTests
     {
         private HttpClient apiClient;
-        private SampleDataHelper data;
+        private DataHelper data;
 
         public MovieControllerTests()
         {
@@ -23,7 +23,7 @@ namespace ContentApiIntegrationTests.ControllerTests
             Environment.SetEnvironmentVariable("CONNECTION_STRING", connectionString);
             var server = new TestServer(Program.CreateWebHostBuilder());
             this.apiClient = server.CreateClient();
-            this.data = new SampleDataHelper(connectionString);
+            this.data = new DataHelper(connectionString);
         }
 
         [Test]

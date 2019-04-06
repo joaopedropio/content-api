@@ -2,7 +2,7 @@
 
 namespace ContentApi.Domain.Entities
 {
-    public class Person
+    public class Person : IStorable
     {
         public uint? Id { get; set; }
         public string Name { get; set; }

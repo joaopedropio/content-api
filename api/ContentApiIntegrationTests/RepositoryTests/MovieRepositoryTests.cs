@@ -6,14 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ContentApiTests
+namespace ContentApiTests.RepositoryTests
 {
     public class MovieRepositoryTests
     {
         private MovieRepository movieRepository;
         private MediaRepository mediaRepository;
         private PersonRepository personRepository;
-        private SampleDataHelper data;
+        private DataHelper dataHelper;
 
         [SetUp]
         public void Setup()
@@ -22,14 +22,33 @@ namespace ContentApiTests
             this.movieRepository = new MovieRepository(connectionString);
             this.mediaRepository = new MediaRepository(connectionString);
             this.personRepository = new PersonRepository(connectionString);
-            this.data = new SampleDataHelper(connectionString);
+            this.dataHelper = new DataHelper(connectionString);
             ContentApi.Database.DatabaseSetup.Bootstrap(connectionString);
+        }
+
+        [Test]
+        public void Get_Movies()
+        {
+            dataHelper.DeleteAll<Movie>(this.movieRepository);
+
+            var movie = dataHelper.GetSampleMovie();
+
+            var insertsCount = 5;
+
+            for (int i = 0; i < insertsCount; i++)
+            {
+                this.movieRepository.Insert(movie);
+            }
+
+            var movies = this.movieRepository.Get();
+
+            Assert.AreEqual(movies.Count, insertsCount);
         }
 
         [Test]
         public void Should_Post_Movie()
         {
-            var movie = data.GetSampleMovie();
+            var movie = dataHelper.GetSampleMovie();
 
             var movieId = this.movieRepository.Insert(movie);
 
@@ -39,7 +58,7 @@ namespace ContentApiTests
         [Test]
         public void Should_Get_Movie()
         {
-            var sampleMovie = data.GetSampleMovie();
+            var sampleMovie = dataHelper.GetSampleMovie();
 
             var movieId = this.movieRepository.Insert(sampleMovie);
 
@@ -55,21 +74,21 @@ namespace ContentApiTests
             Assert.AreEqual(sampleMovie.Synopsis, persistedMovie.Synopsis);
 
             // Assert Video Media
-            var sampleVideo = data.GetSampleVideo();
+            var sampleVideo = dataHelper.GetSampleVideo();
             Assert.AreEqual(sampleVideo.Description, persistedMovie.Video.Description);
             Assert.AreEqual(sampleVideo.Name, persistedMovie.Video.Name);
             Assert.AreEqual(sampleVideo.Path, persistedMovie.Video.Path);
             Assert.AreEqual(sampleVideo.Type, persistedMovie.Video.Type);
 
             // Assert Cover Image Media
-            var sampleCoverImage = data.GetSampleCoverImage();
+            var sampleCoverImage = dataHelper.GetSampleCoverImage();
             Assert.AreEqual(sampleCoverImage.Description, persistedMovie.CoverImage.Description);
             Assert.AreEqual(sampleCoverImage.Name, persistedMovie.CoverImage.Name);
             Assert.AreEqual(sampleCoverImage.Path, persistedMovie.CoverImage.Path);
             Assert.AreEqual(sampleCoverImage.Type, persistedMovie.CoverImage.Type);
 
             // Assert Professionals
-            var sampleProfessionals = data.GetSampleProfessionals();
+            var sampleProfessionals = dataHelper.GetSampleProfessionals();
             Assert.AreEqual(sampleProfessionals[0].Person.Age, persistedMovie.Professionals[0].Person.Age);
             Assert.AreEqual(sampleProfessionals[0].Person.Birthday, persistedMovie.Professionals[0].Person.Birthday);
             Assert.AreEqual(sampleProfessionals[0].Person.Name, persistedMovie.Professionals[0].Person.Name);
@@ -86,7 +105,7 @@ namespace ContentApiTests
         [Test]
         public void Should_Delete_Movie()
         {
-            var sampleMovie = data.GetSampleMovie();
+            var sampleMovie = dataHelper.GetSampleMovie();
 
             var movieId = this.movieRepository.Insert(sampleMovie);
 

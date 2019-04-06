@@ -45,7 +45,9 @@ namespace ContentClient
 
         public async Task<IList<T>> Get<T>() where T : IStorable, new()
         {
-            throw new NotImplementedException();
+            var path = GetPath(new T());
+            var httpResponse = await this.httpClient.GetAsync(path);
+            return await HttpResponseHelper.ReadBody<List<T>>(httpResponse);
         }
 
         public async Task<T> Get<T>(uint id) where T : IStorable, new()

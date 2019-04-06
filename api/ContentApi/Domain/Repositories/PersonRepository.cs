@@ -30,7 +30,11 @@ namespace ContentApi.Domain.Repositories
 
         public IList<Person> Get()
         {
-            throw new NotImplementedException();
+            using (var conn = new MySqlConnection(connectionString))
+            {
+                var query = "SELECT * FROM PERSONS";
+                return conn.Query<Person>(query).ToList();
+            }
         }
 
         public Person Get(uint id)

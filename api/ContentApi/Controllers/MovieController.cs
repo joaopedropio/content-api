@@ -9,7 +9,6 @@ using System.Net;
 
 namespace ContentApi.Controllers
 {
-    [Route("/movie/{*movieId}")]
     [Produces("application/json")]
     public class MovieController : Controller
     {
@@ -21,6 +20,15 @@ namespace ContentApi.Controllers
             this.movieRepository = new MovieRepository(config.ConnectionString);
         }
 
+        [Route("/movie")]
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var movies = this.movieRepository.Get();
+            return JsonResultHelper.Parse(movies, HttpStatusCode.OK);
+        }
+
+        [Route("/movie/{*movieId}")]
         [HttpGet]
         public IActionResult Get(uint movieId)
         {
@@ -28,6 +36,7 @@ namespace ContentApi.Controllers
             return JsonResultHelper.Parse(movie, HttpStatusCode.OK);
         }
 
+        [Route("/movie")]
         [HttpPost]
         public IActionResult Post()
         {
@@ -38,6 +47,7 @@ namespace ContentApi.Controllers
             return JsonResultHelper.Parse(movie, HttpStatusCode.Created);
         }
 
+        [Route("/movie/{*movieId}")]
         [HttpDelete]
         public IActionResult Delete(uint movieId)
         {

@@ -9,12 +9,12 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace ContentApiIntegrationTest
+namespace ContentApiIntegrationTests.ControllerTests
 {
     public class MediaControllerTests
     {
         private HttpClient apiClient;
-        private SampleDataHelper data;
+        private DataHelper data;
 
         public MediaControllerTests()
         {
@@ -22,7 +22,7 @@ namespace ContentApiIntegrationTest
             Environment.SetEnvironmentVariable("CONNECTION_STRING", connectionString);
             var server = new TestServer(Program.CreateWebHostBuilder());
             this.apiClient = server.CreateClient();
-            this.data = new SampleDataHelper(connectionString);
+            this.data = new DataHelper(connectionString);
         }
 
         [Test]

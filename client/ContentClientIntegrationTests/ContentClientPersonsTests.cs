@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace ContentClientIntegrationTests
 {
-    public class ContentClientTests
+    public class ContentClientPersonsTests
     {
         private ContentClient.ContentClient client;
 
-        public ContentClientTests()
+        public ContentClientPersonsTests()
         {
             var contentApiBaseAddress = Configurations.GetBaseAddress();
             this.client = new ContentClient.ContentClient(contentApiBaseAddress);

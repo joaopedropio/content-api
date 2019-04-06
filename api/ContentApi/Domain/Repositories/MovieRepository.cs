@@ -26,8 +26,10 @@ namespace ContentApi.Domain.Repositories
         {
             using (var conn = new MySqlConnection(connectionString))
             {
-                var query = "SELECT * FROM MOVIES";
-                return conn.Query<Movie>(query).ToList();
+                var query = "SELECT ID FROM MOVIES";
+                var moviesIds = conn.Query<uint>(query).ToList();
+
+                return moviesIds.Select(id => Get(id)).ToList();
             }
         }
 
