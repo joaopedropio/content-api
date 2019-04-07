@@ -117,6 +117,48 @@ namespace ContentClientIntegrationTests
         }
 
         [Test]
+        public async Task GetByName()
+        {
+            var movie = await GetSampleMovie();
+            await this.client.Insert<Movie>(movie);
+            var resultMovies = await this.client.GetByName<Movie>(movie.Name);
+            var resultMovie = resultMovies.FirstOrDefault();
+
+            // Assert
+            Assert.GreaterOrEqual(resultMovies.Count, 1);
+            Assert.IsNotNull(resultMovie.Id);
+            Assert.AreEqual(movie.Name, resultMovie.Name);
+            Assert.AreEqual(movie.ReleaseDate, resultMovie.ReleaseDate);
+            Assert.AreEqual(movie.ShortDescription, resultMovie.ShortDescription);
+            Assert.AreEqual(movie.Studio, resultMovie.Studio);
+            Assert.AreEqual(movie.Synopsis, resultMovie.Synopsis);
+
+            // Assert Professionals
+            Assert.AreEqual(movie.Professionals[0].Ocupation, resultMovie.Professionals[0].Ocupation);
+            Assert.AreEqual(movie.Professionals[0].Person.Name, resultMovie.Professionals[0].Person.Name);
+            Assert.AreEqual(movie.Professionals[0].Person.Birthday, resultMovie.Professionals[0].Person.Birthday);
+            Assert.AreEqual(movie.Professionals[0].Person.Name, resultMovie.Professionals[0].Person.Name);
+            Assert.AreEqual(movie.Professionals[0].Person.Nationality, resultMovie.Professionals[0].Person.Nationality);
+
+            Assert.AreEqual(movie.Professionals[1].Ocupation, resultMovie.Professionals[1].Ocupation);
+            Assert.AreEqual(movie.Professionals[1].Person.Name, resultMovie.Professionals[1].Person.Name);
+            Assert.AreEqual(movie.Professionals[1].Person.Birthday, resultMovie.Professionals[1].Person.Birthday);
+            Assert.AreEqual(movie.Professionals[1].Person.Name, resultMovie.Professionals[1].Person.Name);
+            Assert.AreEqual(movie.Professionals[1].Person.Nationality, resultMovie.Professionals[1].Person.Nationality);
+            // Assert Video
+            Assert.AreEqual(movie.Video.Description, resultMovie.Video.Description);
+            Assert.AreEqual(movie.Video.Name, resultMovie.Video.Name);
+            Assert.AreEqual(movie.Video.Path, resultMovie.Video.Path);
+            Assert.AreEqual(movie.Video.Type, resultMovie.Video.Type);
+
+            // Assert CoverImage
+            Assert.AreEqual(movie.CoverImage.Description, movie.CoverImage.Description);
+            Assert.AreEqual(movie.CoverImage.Name, movie.CoverImage.Name);
+            Assert.AreEqual(movie.CoverImage.Path, movie.CoverImage.Path);
+            Assert.AreEqual(movie.CoverImage.Type, movie.CoverImage.Type);
+        }
+
+        [Test]
         public async Task Get()
         {
             var movie = await GetSampleMovie();

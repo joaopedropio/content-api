@@ -2,6 +2,7 @@
 using ContentClient.Models;
 using NUnit.Framework;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ContentClientIntegrationTests
@@ -42,6 +43,22 @@ namespace ContentClientIntegrationTests
             var personId = await this.client.Insert<Person>(person);
             var resultPerson = await this.client.Get<Person>(personId);
 
+            Assert.IsNotNull(resultPerson);
+            Assert.AreEqual(person.Name, resultPerson.Name);
+            Assert.AreEqual(person.Birthday, resultPerson.Birthday);
+            Assert.AreEqual(person.Nationality, resultPerson.Nationality);
+        }
+
+        [Test]
+        public async Task GetByName()
+        {
+            var person = GetSamplePerson();
+            await this.client.Insert<Person>(person);
+            var resultPersons = await this.client.GetByName<Person>(person.Name);
+            var resultPerson = resultPersons.FirstOrDefault();
+
+            Assert.IsNotNull(resultPerson);
+            Assert.GreaterOrEqual(resultPersons.Count, 1);
             Assert.IsNotNull(resultPerson);
             Assert.AreEqual(person.Name, resultPerson.Name);
             Assert.AreEqual(person.Birthday, resultPerson.Birthday);

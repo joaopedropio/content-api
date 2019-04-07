@@ -66,5 +66,12 @@ namespace ContentClient
             var postMedia = await HttpResponseHelper.ReadBody<T>(httpResponse);
             return postMedia.Id.Value;
         }
+
+        public async Task<IList<T>> GetByName<T>(string name) where T : IStorable, new()
+        {
+            var path = GetPath(new T());
+            var httpResponse = await this.httpClient.GetAsync(path + $"?name={name}");
+            return await HttpResponseHelper.ReadBody<List<T>>(httpResponse);
+        }
     }
 }
