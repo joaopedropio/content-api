@@ -1,11 +1,11 @@
-﻿using ContentApi.Database;
+﻿using ContentApi.Helpers;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace ContentApiTests
+namespace ContentApiUnitTests.QueryHelperTests
 {
-    public class QueryHelperTests
+    public class CreateInsertQueryTests
     {
         [Test]
         public void Should_ThrowException_When_InputIsNull()

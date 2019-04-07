@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -76,6 +77,32 @@ namespace ContentApiIntegrationTests.ControllerTests
             var resultMedias = await HttpResponseHelper.ReadBody<List<Media>>(httpResponse);
 
             Assert.AreEqual(insertsCount, resultMedias.Count);
+        }
+
+        [Test]
+        public async Task Get_MediaByName()
+        {
+            // Arrange
+            var media = data.GetSampleMedia();
+            media.Name = "um nome de media qualquer";
+            var json = JsonConvert.SerializeObject(media);
+            var content = new StringContent(json);
+
+            // Act
+            await this.apiClient.PostAsync("/media", content);
+
+            var httpResponse = await this.apiClient.GetAsync($"/media?name={media.Name}");
+            var resultMedias = await HttpResponseHelper.ReadBody<List<Media>>(httpResponse);
+            var resultMedia = resultMedias.FirstOrDefault();
+
+            // Assert
+            Assert.GreaterOrEqual(resultMedias.Count, 1);
+            Assert.AreEqual(HttpStatusCode.OK, httpResponse.StatusCode);
+            Assert.IsNotNull(resultMedia.Id);
+            Assert.AreEqual(media.Name, resultMedia.Name);
+            Assert.AreEqual(media.Description, resultMedia.Description);
+            Assert.AreEqual(media.Path, resultMedia.Path);
+            Assert.AreEqual(media.Type, resultMedia.Type);
         }
 
         [Test]

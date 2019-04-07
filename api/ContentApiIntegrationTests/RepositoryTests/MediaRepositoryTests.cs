@@ -70,6 +70,25 @@ namespace ContentApiTests.RepositoryTests
         }
 
         [Test]
+        public void Get_MediaByName()
+        {
+            var media = dataHelper.GetSampleMedia();
+            media.Name = "um nome de media qualquer";
+
+            this.mediaRepository.Insert(media);
+
+            var medias = this.mediaRepository.GetByName(media.Name);
+
+            var mediaPersisted = medias.FirstOrDefault();
+
+            Assert.GreaterOrEqual(medias.Count, 1);
+            Assert.AreEqual(media.Description, mediaPersisted.Description);
+            Assert.AreEqual(media.Name, mediaPersisted.Name);
+            Assert.AreEqual(media.Path, mediaPersisted.Path);
+            Assert.AreEqual(media.Type, mediaPersisted.Type);
+        }
+
+        [Test]
         public void Delete_Media()
         {
             var media = dataHelper.GetSampleMedia();
@@ -78,7 +97,9 @@ namespace ContentApiTests.RepositoryTests
 
             this.mediaRepository.Delete(mediaId);
 
-            Assert.Throws<ArgumentException>(() => this.mediaRepository.Get(mediaId));
+            var deletedMedia = this.mediaRepository.Get(mediaId);
+
+            Assert.IsNull(deletedMedia);
         }
     }
 }

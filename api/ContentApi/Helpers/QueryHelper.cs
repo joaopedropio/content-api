@@ -1,10 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ContentApi.Database
+namespace ContentApi.Helpers
 {
     public static class QueryHelper
     {
+        public static string CreateSearchBy(string table, string column, string value)
+        {
+
+            //var query = $"SELECT ID FROM PERSONS WHERE REPLACE(NAME, ' ', '') LIKE REPLACE('%NAME%', ' ', '');;";
+
+            if (string.IsNullOrEmpty(table))
+                throw new ArgumentNullException("table");
+
+            if (string.IsNullOrEmpty(column))
+                throw new ArgumentNullException("column");
+
+            if (string.IsNullOrEmpty(value))
+                throw new ArgumentNullException("value");
+
+            var words = value.Split(' ');
+
+            var valueWithoutSpaces = string.Format("'%{0}%'", string.Join('%', words));
+
+            return $"SELECT ID FROM {table} WHERE {column} LIKE {valueWithoutSpaces};";
+        }
+
         public static string CreateInsertQuery(string table, List<KeyValuePair<string, string>> columns)
         {
             if(string.IsNullOrEmpty(table))

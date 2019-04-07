@@ -4,6 +4,7 @@ using ContentApi.JSON;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
@@ -22,9 +23,14 @@ namespace ContentApi.Controllers
 
         [Route("/person")]
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] string name)
         {
-            var persons = this.personRepository.Get();
+            IList<Person> persons;
+            if (string.IsNullOrEmpty(name))
+                persons = this.personRepository.Get();
+            else
+                persons = this.personRepository.GetByName(name);
+
             return JsonResultHelper.Parse(persons, HttpStatusCode.OK);
         }
 

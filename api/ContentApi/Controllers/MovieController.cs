@@ -4,6 +4,8 @@ using ContentApi.JSON;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
@@ -22,9 +24,14 @@ namespace ContentApi.Controllers
 
         [Route("/movie")]
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] string name)
         {
-            var movies = this.movieRepository.Get();
+            IList<Movie> movies;
+            if (string.IsNullOrEmpty(name))
+                movies = this.movieRepository.Get();
+            else
+                movies = this.movieRepository.GetByName(name);
+
             return JsonResultHelper.Parse(movies, HttpStatusCode.OK);
         }
 

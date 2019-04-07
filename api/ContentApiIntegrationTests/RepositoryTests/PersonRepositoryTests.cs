@@ -3,6 +3,7 @@ using ContentApi.Domain.Repositories;
 using ContentApiIntegrationTests;
 using NUnit.Framework;
 using System;
+using System.Linq;
 
 namespace ContentApiTests.RepositoryTests
 {
@@ -68,6 +69,23 @@ namespace ContentApiTests.RepositoryTests
         }
 
         [Test]
+        public void Get_PersonByName()
+        {
+            var person = dataHelper.GetSamplePerson();
+
+            this.personRepository.Insert(person);
+
+            var persons = this.personRepository.GetByName(person.Name);
+
+            var personPersisted = persons.First();
+
+            Assert.GreaterOrEqual(persons.Count, 1);
+            Assert.AreEqual(person.Birthday, personPersisted.Birthday);
+            Assert.AreEqual(person.Name, personPersisted.Name);
+            Assert.AreEqual(person.Nationality, personPersisted.Nationality);
+        }
+
+        [Test]
         public void Delete_Person()
         {
             var samplePerson = dataHelper.GetSamplePerson();
@@ -76,7 +94,9 @@ namespace ContentApiTests.RepositoryTests
 
             this.personRepository.Delete(personId);
 
-            Assert.Throws<InvalidOperationException>(() => this.personRepository.Get(personId), "Sequence contains no elements");
+            var deletedPerson = this.personRepository.Get(personId);
+
+            Assert.IsNull(deletedPerson);
         }
     }
 }

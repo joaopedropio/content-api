@@ -4,6 +4,7 @@ using System.Linq;
 using ContentApi.Database;
 using ContentApi.Domain.Entities;
 using ContentApi.Domain.Repositories.Interfaces;
+using ContentApi.Helpers;
 using Dapper;
 using MySql.Data.MySqlClient;
 
@@ -91,6 +92,19 @@ namespace ContentApi.Domain.Repositories
                     throw new Exception("Error while inserting person");
 
                 return conn.QueryFirstOrDefault<uint>("SELECT LAST_INSERT_ID()");
+            }
+        }
+
+        public IList<Media> GetByName(string name)
+        {
+            var query = QueryHelper.CreateSearchBy("MEDIAS", "NAME", name);
+            using (var conn = new MySqlConnection(connectionString))
+            {
+                var ids = conn.Query<uint>(query);
+                if (ids.Count() == 0)
+                    return new List<Media>();
+
+                return ids.Select(id => this.Get(id)).ToList();
             }
         }
     }

@@ -4,6 +4,7 @@ using ContentApi.JSON;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
@@ -22,9 +23,14 @@ namespace ContentApi.Controllers
 
         [Route("/media")]
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] string name)
         {
-            var medias = this.mediaRepository.Get();
+            IList<Media> medias;
+            if (string.IsNullOrEmpty(name))
+                medias = this.mediaRepository.Get();
+            else
+                medias = this.mediaRepository.GetByName(name);
+
             return JsonResultHelper.Parse(medias, HttpStatusCode.OK);
         }
 
@@ -35,7 +41,6 @@ namespace ContentApi.Controllers
             var media = this.mediaRepository.Get(mediaId);
             return JsonResultHelper.Parse(media, HttpStatusCode.OK);
         }
-
 
         [Route("/media")]
         [HttpPost]

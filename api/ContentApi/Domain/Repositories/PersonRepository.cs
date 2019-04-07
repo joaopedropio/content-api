@@ -1,6 +1,7 @@
 ﻿using ContentApi.Database;
 using ContentApi.Domain.Entities;
 using ContentApi.Domain.Repositories.Interfaces;
+using ContentApi.Helpers;
 using Dapper;
 using MySql.Data.MySqlClient;
 using System;
@@ -87,6 +88,19 @@ namespace ContentApi.Domain.Repositories
                 person.Nationality = m.NATIONALITY;
                 return person;
             });
+        }
+
+        public IList<Person> GetByName(string name)
+        {
+            var query = QueryHelper.CreateSearchBy("PERSONS", "NAME", name);
+            using (var conn = new MySqlConnection(connectionString))
+            {
+                var ids = conn.Query<uint>(query);
+                if (ids.Count() == 0)
+                    return new List<Person>();
+
+                return ids.Select(id => this.Get(id)).ToList();
+            }
         }
     }
 }

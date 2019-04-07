@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -73,6 +74,31 @@ namespace ContentApiIntegrationTests.ControllerTests
             Assert.AreEqual(person.Birthday, resultPerson.Birthday);
             Assert.AreEqual(person.Name, resultPerson.Name);
             Assert.AreEqual(person.Nationality, resultPerson.Nationality);
+        }
+
+        [Test]
+        public async Task Get_PersonByName()
+        {
+
+            // Arrange
+            var person = data.GetSamplePerson();
+            person.Name = "um nome de person qualquer";
+            var json = JsonConvert.SerializeObject(person);
+            var content = new StringContent(json);
+
+            // Act
+            var resultPost = await this.apiClient.PostAsync("/person", content);
+            var resultPerson = await HttpResponseHelper.ReadBody<Person>(resultPost);
+            var httpResponse = await this.apiClient.GetAsync($"/person?name={resultPerson.Name}");
+            var resultPersons = await HttpResponseHelper.ReadBody<List<Person>>(httpResponse);
+            var persistedPerson = resultPersons.FirstOrDefault();
+
+            // Assert
+            Assert.IsNotNull(resultPersons);
+            Assert.GreaterOrEqual(resultPersons.Count, 1);
+            Assert.AreEqual(person.Birthday, persistedPerson.Birthday);
+            Assert.AreEqual(person.Name, persistedPerson.Name);
+            Assert.AreEqual(person.Nationality, persistedPerson.Nationality);
         }
 
         [Test]

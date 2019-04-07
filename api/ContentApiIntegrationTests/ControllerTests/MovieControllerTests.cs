@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -67,6 +68,60 @@ namespace ContentApiIntegrationTests.ControllerTests
 
             // Assert
             Assert.AreEqual(HttpStatusCode.Created, httpResponse.StatusCode);
+            Assert.IsNotNull(resultMovie.Id);
+            Assert.AreEqual(movie.Name, resultMovie.Name);
+            Assert.AreEqual(movie.ReleaseDate, resultMovie.ReleaseDate);
+            Assert.AreEqual(movie.ShortDescription, resultMovie.ShortDescription);
+            Assert.AreEqual(movie.Studio, resultMovie.Studio);
+            Assert.AreEqual(movie.Synopsis, resultMovie.Synopsis);
+
+            // Assert Professionals
+            Assert.AreEqual(movie.Professionals[0].Ocupation, resultMovie.Professionals[0].Ocupation);
+            Assert.AreEqual(movie.Professionals[0].Person.Name, resultMovie.Professionals[0].Person.Name);
+            Assert.AreEqual(movie.Professionals[0].Person.Age, resultMovie.Professionals[0].Person.Age);
+            Assert.AreEqual(movie.Professionals[0].Person.Birthday, resultMovie.Professionals[0].Person.Birthday);
+            Assert.AreEqual(movie.Professionals[0].Person.Name, resultMovie.Professionals[0].Person.Name);
+            Assert.AreEqual(movie.Professionals[0].Person.Nationality, resultMovie.Professionals[0].Person.Nationality);
+
+            Assert.AreEqual(movie.Professionals[1].Ocupation, resultMovie.Professionals[1].Ocupation);
+            Assert.AreEqual(movie.Professionals[1].Person.Name, resultMovie.Professionals[1].Person.Name);
+            Assert.AreEqual(movie.Professionals[1].Person.Age, resultMovie.Professionals[1].Person.Age);
+            Assert.AreEqual(movie.Professionals[1].Person.Birthday, resultMovie.Professionals[1].Person.Birthday);
+            Assert.AreEqual(movie.Professionals[1].Person.Name, resultMovie.Professionals[1].Person.Name);
+            Assert.AreEqual(movie.Professionals[1].Person.Nationality, resultMovie.Professionals[1].Person.Nationality);
+            // Assert Video
+            Assert.AreEqual(movie.Video.Description, resultMovie.Video.Description);
+            Assert.AreEqual(movie.Video.Name, resultMovie.Video.Name);
+            Assert.AreEqual(movie.Video.Path, resultMovie.Video.Path);
+            Assert.AreEqual(movie.Video.Type, resultMovie.Video.Type);
+
+            // Assert CoverImage
+            Assert.AreEqual(movie.CoverImage.Description, movie.CoverImage.Description);
+            Assert.AreEqual(movie.CoverImage.Name, movie.CoverImage.Name);
+            Assert.AreEqual(movie.CoverImage.Path, movie.CoverImage.Path);
+            Assert.AreEqual(movie.CoverImage.Type, movie.CoverImage.Type);
+        }
+
+        [Test]
+        public async Task Get_MovieByName()
+        {
+            // Arrange
+            var movie = data.GetSampleMovie();
+            movie.Name = "um nome de movie qualquer";
+            var json = JsonConvert.SerializeObject(movie);
+            var content = new StringContent(json);
+
+            // Act
+            var postResult = await this.apiClient.PostAsync("/movie", content);
+            var postMovie = await HttpResponseHelper.ReadBody<Movie>(postResult);
+            var httpResponse = await this.apiClient.GetAsync($"/movie?name={postMovie.Name}");
+            var resultMovies = await HttpResponseHelper.ReadBody<List<Movie>>(httpResponse);
+            var resultMovie = resultMovies.FirstOrDefault();
+
+            // Assert
+            Assert.IsNotNull(resultMovie);
+            Assert.GreaterOrEqual(resultMovies.Count, 1);
+            Assert.AreEqual(HttpStatusCode.OK, httpResponse.StatusCode);
             Assert.IsNotNull(resultMovie.Id);
             Assert.AreEqual(movie.Name, resultMovie.Name);
             Assert.AreEqual(movie.ReleaseDate, resultMovie.ReleaseDate);
