@@ -73,5 +73,11 @@ namespace ContentClient
             var httpResponse = await this.httpClient.GetAsync(path + $"?name={name}");
             return await HttpResponseHelper.ReadBody<List<T>>(httpResponse);
         }
+
+        public async Task<IList<string>> GetMediaFilesPaths()
+        {
+            var httpResponse = await this.httpClient.GetAsync("/mediafiles");
+            return await HttpResponseHelper.ReadBody<List<string>>(httpResponse);
+        }
     }
 }

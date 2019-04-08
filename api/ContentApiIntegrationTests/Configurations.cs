@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using ContentApi.Configurations;
+using Microsoft.Extensions.Configuration;
 
 namespace ContentApiIntegrationTests
 {
@@ -13,5 +14,22 @@ namespace ContentApiIntegrationTests
 
             return connectionString;
         }
+
+        public static SSHConfiguration GetSSHConfigurations()
+        {
+            return new SSHConfiguration()
+            {
+                Host = Configuration.GetValue<string>("SSH_HOST") ?? "localhost",
+                Port = int.Parse(Configuration.GetValue<string>("SSH_PORT") ?? "2222"),
+                Username = Configuration.GetValue<string>("SSH_USERNAME") ?? "content",
+                Password = Configuration.GetValue<string>("SSH_PASSWORD") ?? "password",
+            };
+        }
+
+        public static string GetMediaFilesBasePath()
+        {
+            return Configuration.GetValue<string>("MEDIAFILES_BASE_PATH") ?? "/content";
+        }
+
     }
 }

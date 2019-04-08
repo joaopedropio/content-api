@@ -1,4 +1,5 @@
-﻿using ContentApi.Domain.Entities;
+﻿using ContentApi.Configurations;
+using ContentApi.Domain.Entities;
 using ContentApi.Domain.Repositories;
 using ContentApi.JSON;
 using Microsoft.AspNetCore.Mvc;

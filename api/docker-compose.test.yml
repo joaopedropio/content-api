@@ -11,6 +11,7 @@ services:
       - CONNECTION_STRING=Server=mysql;Database=content;Uid=content;Pwd=content1234
     networks:
       - contentapinetwork
+
   mysql:
     image: mysql
     environment:
