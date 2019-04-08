@@ -14,6 +14,10 @@ namespace ContentApi.MediaFiles
 
         public SSHClient(string host, string username, string password, int port = 22)
         {
+            Console.WriteLine("SSH configurations:");
+            Console.WriteLine("Host: " + host);
+            Console.WriteLine("Username: " + username);
+            Console.WriteLine("Port: " + port);
             var authenticationMethod = new PasswordAuthenticationMethod(username, password);
             this.connectionInfo = new ConnectionInfo(host, port, username, authenticationMethod);
         }
@@ -31,7 +35,10 @@ namespace ContentApi.MediaFiles
                 }
                 catch (Exception ex)
                 {
-                    // log here
+                    Console.WriteLine("SSH configurations:");
+                    Console.WriteLine("Host" + this.connectionInfo.Host);
+                    Console.WriteLine("Username" + this.connectionInfo.Username);
+                    Console.WriteLine("Port" + this.connectionInfo.Port);
                     throw ex;
                 }
             }

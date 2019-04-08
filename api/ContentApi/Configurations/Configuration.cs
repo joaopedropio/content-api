@@ -27,10 +27,10 @@ namespace ContentApi.Configurations
 
             SSHConfiguration = new SSHConfiguration()
             {
-                Host = configuration.GetValue<string>("SFTP_HOST") ?? "localhost",
-                Port = int.Parse(configuration.GetValue<string>("SFTP_PORT") ?? "2222"),
-                Username = configuration.GetValue<string>("SFTP_USERNAME") ?? "content",
-                Password = configuration.GetValue<string>("SFTP_PASSWORD") ?? "password",
+                Host = configuration.GetValue<string>("SSH_HOST") ?? "localhost",
+                Port = int.Parse(configuration.GetValue<string>("SSH_PORT") ?? "2222"),
+                Username = configuration.GetValue<string>("SSH_USERNAME") ?? "content",
+                Password = configuration.GetValue<string>("SSH_PASSWORD") ?? "password",
             };
         }
     }
