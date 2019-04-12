@@ -54,5 +54,11 @@ namespace ContentApi.MediaFiles
 
             return str.Split('\n', StringSplitOptions.RemoveEmptyEntries).ToList();
         }
+
+        public IList<string> ListFilePathsByExtension(string path, string extension)
+        {
+            var str = CreateConnection((client) => client.RunCommand($"find {path} -name \"*.{extension}\"").Result);
+            return str.Split('\n', StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
     }
 }

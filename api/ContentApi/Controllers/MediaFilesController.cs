@@ -2,6 +2,7 @@
 using ContentApi.JSON;
 using ContentApi.MediaFiles;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Net;
 
 namespace ContentApi.Controllers
@@ -21,8 +22,11 @@ namespace ContentApi.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var mediasPaths = this.client.ListFilePaths(this.config.MediaFilesBasePath);
-            return JsonResultHelper.Parse(mediasPaths, HttpStatusCode.OK);
+            var basePath = config.MediaFilesBasePath;
+            var mediasPaths = this.client.ListFilePathsByExtension(this.config.MediaFilesBasePath, "mpd");
+            var relativePaths = mediasPaths.Select(mp => MediaFileHelper.RemoveBasePath(mp, basePath))
+                                           .Where(rl => !string.IsNullOrEmpty(rl));
+            return JsonResultHelper.Parse(relativePaths, HttpStatusCode.OK);
         }
     }
 }

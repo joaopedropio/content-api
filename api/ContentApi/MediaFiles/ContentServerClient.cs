@@ -26,5 +26,10 @@ namespace ContentApi.MediaFiles
         {
             return this.sshClient.ListFilePaths(path);
         }
+
+        public IList<string> ListFilePathsByExtension(string path, string extension)
+        {
+            return this.sshClient.ListFilePathsByExtension(path, extension);
+        }
     }
 }
