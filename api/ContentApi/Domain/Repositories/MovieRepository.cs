@@ -1,6 +1,7 @@
 ﻿using ContentApi.Database;
 using ContentApi.Domain.Entities;
 using ContentApi.Domain.Repositories.Interfaces;
+using ContentApi.Helpers;
 using Dapper;
 using MySql.Data.MySqlClient;
 using System;
@@ -26,8 +27,10 @@ namespace ContentApi.Domain.Repositories
         {
             using (var conn = new MySqlConnection(connectionString))
             {
-                var query = "SELECT * FROM MOVIES";
-                return conn.Query<Movie>(query).ToList();
+                var query = "SELECT ID FROM MOVIES";
+                var moviesIds = conn.Query<uint>(query).ToList();
+
+                return moviesIds.Select(id => Get(id)).ToList();
             }
         }
 
@@ -38,6 +41,10 @@ namespace ContentApi.Domain.Repositories
                 var query = $"SELECT * FROM MOVIES WHERE ID = '{id}'";
 
                 var queryResult = conn.Query<dynamic>(query);
+
+                if (queryResult.Count() == 0)
+                    return null;
+
                 var movie = Parse(queryResult).First();
 
                 var professionals = GetProfessionalsByContentId(id);
@@ -98,6 +105,9 @@ namespace ContentApi.Domain.Repositories
 
                 var professionals = conn.Query<dynamic>(selectProfessionals);
 
+                if (professionals.Count() == 0)
+                    return new List<Professional>();
+
                 return ParseProfessionals(professionals).ToList();
             }
         }
@@ -157,6 +167,19 @@ namespace ContentApi.Domain.Repositories
                 CoverImage = this.mediaRepository.Get(m.COVER_IMAGE_ID),
                 Video = this.mediaRepository.Get(m.VIDEO_ID)
             });
+        }
+
+        public IList<Movie> GetByName(string name)
+        {
+            var query = QueryHelper.CreateSearchBy("MOVIES", "NAME", name);
+            using (var conn = new MySqlConnection(connectionString))
+            {
+                var ids = conn.Query<uint>(query);
+                if (ids.Count() == 0)
+                    return new List<Movie>();
+
+                return ids.Select(id => this.Get(id)).ToList();
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using ContentApi.Database;
+using ContentApi.Configurations;
 
 namespace ContentApi
 {

@@ -1,15 +1,17 @@
-﻿using ContentApi.Domain.Entities;
+﻿using ContentApi.Configurations;
+using ContentApi.Domain.Entities;
 using ContentApi.Domain.Repositories;
 using ContentApi.JSON;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
 namespace ContentApi.Controllers
 {
-    [Route("/movie/{*movieId}")]
     [Produces("application/json")]
     public class MovieController : Controller
     {
@@ -21,6 +23,20 @@ namespace ContentApi.Controllers
             this.movieRepository = new MovieRepository(config.ConnectionString);
         }
 
+        [Route("/movie")]
+        [HttpGet]
+        public IActionResult Get([FromQuery] string name)
+        {
+            IList<Movie> movies;
+            if (string.IsNullOrEmpty(name))
+                movies = this.movieRepository.Get();
+            else
+                movies = this.movieRepository.GetByName(name);
+
+            return JsonResultHelper.Parse(movies, HttpStatusCode.OK);
+        }
+
+        [Route("/movie/{*movieId}")]
         [HttpGet]
         public IActionResult Get(uint movieId)
         {
@@ -28,6 +44,7 @@ namespace ContentApi.Controllers
             return JsonResultHelper.Parse(movie, HttpStatusCode.OK);
         }
 
+        [Route("/movie")]
         [HttpPost]
         public IActionResult Post()
         {
@@ -38,6 +55,7 @@ namespace ContentApi.Controllers
             return JsonResultHelper.Parse(movie, HttpStatusCode.Created);
         }
 
+        [Route("/movie/{*movieId}")]
         [HttpDelete]
         public IActionResult Delete(uint movieId)
         {

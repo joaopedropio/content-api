@@ -1,7 +1,8 @@
 ﻿namespace ContentApi.Domain.Entities
 {
-    public class Episode
+    public class Episode : IStorable
     {
+        public uint? Id { get; set; }
         public string Name { get; set; }
         public int EpisodeNumber { get; set; }
         public int SeasonNumber { get; set; }

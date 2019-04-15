@@ -9,3 +9,28 @@ services:
       - MYSQL_PASSWORD=content1234
     ports:
       - "3306:3306"
+
+  content_server:
+    image: joaopio/content-server
+    ports:
+      - "2222:22"
+      - "4000:80"
+    environment:
+      - NGINX_PORT=80
+      - CONTENT_PATH=/content
+      - CONTENT_AUTH_URL=http://content_authorizator
+      - USER_NAME=content
+      - USER_PASSWORD=password
+    volumes:
+      - c:/content:/content
+    networks:
+      - content_network
+
+  content_authorizator:
+    image: joaopio/content-authorizator
+    environment:
+      - API_PORT=80
+    networks:
+      - content_network
+networks:
+  content_network:

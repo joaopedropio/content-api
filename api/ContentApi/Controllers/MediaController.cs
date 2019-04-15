@@ -1,15 +1,16 @@
-﻿using ContentApi.Domain.Entities;
+﻿using ContentApi.Configurations;
+using ContentApi.Domain.Entities;
 using ContentApi.Domain.Repositories;
 using ContentApi.JSON;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
 namespace ContentApi.Controllers
 {
-    [Route("/media/{*mediaId}")]
     [Produces("application/json")]
     public class MediaController : Controller
     {
@@ -21,6 +22,20 @@ namespace ContentApi.Controllers
             this.mediaRepository = new MediaRepository(config.ConnectionString);
         }
 
+        [Route("/media")]
+        [HttpGet]
+        public IActionResult Get([FromQuery] string name)
+        {
+            IList<Media> medias;
+            if (string.IsNullOrEmpty(name))
+                medias = this.mediaRepository.Get();
+            else
+                medias = this.mediaRepository.GetByName(name);
+
+            return JsonResultHelper.Parse(medias, HttpStatusCode.OK);
+        }
+
+        [Route("/media/{*mediaId}")]
         [HttpGet]
         public IActionResult Get(uint mediaId)
         {
@@ -28,6 +43,7 @@ namespace ContentApi.Controllers
             return JsonResultHelper.Parse(media, HttpStatusCode.OK);
         }
 
+        [Route("/media")]
         [HttpPost]
         public IActionResult Post()
         {
@@ -38,6 +54,8 @@ namespace ContentApi.Controllers
             return JsonResultHelper.Parse(media, HttpStatusCode.Created);
         }
 
+
+        [Route("/media/{*mediaId}")]
         [HttpDelete]
         public IActionResult Delete(uint mediaId)
         {

@@ -45,7 +45,9 @@ namespace ContentClient
 
         public async Task<IList<T>> Get<T>() where T : IStorable, new()
         {
-            throw new NotImplementedException();
+            var path = GetPath(new T());
+            var httpResponse = await this.httpClient.GetAsync(path);
+            return await HttpResponseHelper.ReadBody<List<T>>(httpResponse);
         }
 
         public async Task<T> Get<T>(uint id) where T : IStorable, new()
@@ -63,6 +65,19 @@ namespace ContentClient
             var httpResponse = await this.httpClient.PostAsync(path, content);
             var postMedia = await HttpResponseHelper.ReadBody<T>(httpResponse);
             return postMedia.Id.Value;
+        }
+
+        public async Task<IList<T>> GetByName<T>(string name) where T : IStorable, new()
+        {
+            var path = GetPath(new T());
+            var httpResponse = await this.httpClient.GetAsync(path + $"?name={name}");
+            return await HttpResponseHelper.ReadBody<List<T>>(httpResponse);
+        }
+
+        public async Task<IList<string>> GetMediaFilesPaths()
+        {
+            var httpResponse = await this.httpClient.GetAsync("/mediafiles");
+            return await HttpResponseHelper.ReadBody<List<string>>(httpResponse);
         }
     }
 }
