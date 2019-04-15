@@ -47,7 +47,7 @@ services:
       - USER_NAME=content
       - USER_PASSWORD=password
     volumes:
-      - c:/content:/content
+      - /content:/content
     networks:
       - contentapinetwork
 
