@@ -9,8 +9,14 @@ services:
       - mysql
     environment:
       - CONNECTION_STRING=Server=mysql;Database=content;Uid=content;Pwd=content1234
+      - SSH_HOST=content_server
+      - SSH_USERNAME=content
+      - SSH_PASSWORD=password
+      - SSH_PORT=22
+      - MEDIAFILES_BASE_PATH=/content
     networks:
       - contentapinetwork
+
   mysql:
     image: mysql
     environment:
@@ -20,5 +26,31 @@ services:
       - MYSQL_PASSWORD=content1234
     networks:
       - contentapinetwork
+
+  content_server:
+    image: joaopio/content-server
+    ports:
+      - "2222:22"
+      - "4000:80"
+    environment:
+      - NGINX_PORT=80
+      - CONTENT_PATH=/content
+      - CONTENT_AUTH_URL=http://content_authorizator
+      - USER_NAME=content
+      - USER_PASSWORD=password
+    volumes:
+      - c:/content:/content
+    networks:
+      - contentapinetwork
+
+  content_authorizator:
+    image: joaopio/content-authorizator
+    environment:
+      - API_PORT=80
+    ports:
+      - "8888:80"
+    networks:
+      - contentapinetwork
+
 networks:
   contentapinetwork:
