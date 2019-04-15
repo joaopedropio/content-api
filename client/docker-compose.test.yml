@@ -46,8 +46,6 @@ services:
       - CONTENT_AUTH_URL=http://content_authorizator
       - USER_NAME=content
       - USER_PASSWORD=password
-    volumes:
-      - /content:/content
     networks:
       - contentapinetwork
 
